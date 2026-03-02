@@ -1,0 +1,31 @@
+---
+description: Generalize components, minimize custom attributes, maximize reuse
+globs: "**/*.jsx"
+alwaysApply: false
+---
+
+# Component Generalization
+
+Prefer **generalized, reusable components** over ad-hoc props and inline overrides.
+
+## Principles
+
+1. **Minimize custom attributes** — Avoid forcing consumers to repeat layout fixes (e.g. `alignSelf`, `textAlign`) when the component can handle it internally.
+2. **Encode common patterns as props** — If a layout or style is used repeatedly, bake it into the component API.
+3. **Generalize, don't specialize** — One flexible component (`heading` prop) beats many one-off wrappers.
+4. **Favor convention over configuration** — Sensible defaults reduce repetition. Add props only when variation is needed.
+
+## Example
+
+```jsx
+// ❌ BAD — consumer must remember layout overrides
+<MiraContentSlide centered>
+  <Heading alignSelf="flex-start" style={{ textAlign: 'left' }}>Title</Heading>
+  ...
+</MiraContentSlide>
+
+// ✅ GOOD — component owns the pattern
+<MiraContentSlide heading="Title" centered>
+  ...
+</MiraContentSlide>
+```

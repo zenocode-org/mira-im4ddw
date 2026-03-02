@@ -1,0 +1,65 @@
+---
+description: Use CodeSlide, CodeAndPreviewSlide, PreviewSlide for code and HTML preview slides
+globs: "slides/**/*.jsx"
+alwaysApply: false
+---
+
+# Slide Code & Preview Components
+
+Use the reusable slide components from `slides/components` instead of manual FlexBox/Box/CodePane/HtmlPreview layouts.
+
+## When to Use Which
+
+| Component | Use case |
+|-----------|----------|
+| **CodeAndPreviewSlide** | Code on the left, live HTML/CSS preview on the right (side-by-side) |
+| **CodeSlide** | Code only, no preview (optionally children like Text below) |
+| **PreviewSlide** | Live preview only, no code |
+| **MiraContentSlide** | Custom content (lists, text, mixed) — use CodePane directly only when layout differs (e.g. centered) |
+
+## CodeAndPreviewSlide
+
+```jsx
+<CodeAndPreviewSlide
+  heading="Title"
+  code={`<p>HTML here</p>`}
+  preview={{ html: `<p>HTML here</p>`, css: `p { color: red; }`, title: 'Preview' }}
+  // or shorthand: preview={`<p>HTML</p>`}
+  language="html"
+  showLineNumbers
+  fontSize={12}
+  notes="Presenter notes."
+/>
+```
+
+## CodeSlide
+
+```jsx
+<CodeSlide
+  heading="Title"
+  code={`<tag>content</tag>`}
+  language="html"
+  fontSize={15}
+  notes="Notes."
+>
+  <Text marginTop={16}>Optional content below code</Text>
+</CodeSlide>
+```
+
+## PreviewSlide
+
+```jsx
+<PreviewSlide
+  heading="Title"
+  html={`<p>Content</p>`}
+  css={``}
+  title="Preview"
+  notes="Notes."
+/>
+```
+
+## Do Not
+
+- Use manual `FlexBox` + `Box` + `CodePane` + `HtmlPreview` for side-by-side layouts
+- Use `overflowX: 'auto'` — components use word-wrap by default
+- Repeat CodePane theme/fontSize — components use oneLight and sensible defaults
