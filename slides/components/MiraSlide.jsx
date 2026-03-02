@@ -12,7 +12,7 @@ export function MiraTitleSlide({ title, subtitle, presenter, date, children, ...
       <Box position="relative" width="100%" height="100%" overflow="hidden">
         {/* AFLOKKAT logo - top left */}
         <Box position="absolute" top={24} left={32} zIndex={2}>
-          <img src="/logo-aflokat.png" alt="AFLOKKAT" style={{ height: 96 }} />
+          <img src={`${import.meta.env.BASE_URL}logo-aflokat.png`} alt="AFLOKKAT" style={{ height: 96 }} />
         </Box>
         <FlexBox
           position="relative"
@@ -40,7 +40,7 @@ export function MiraTitleSlide({ title, subtitle, presenter, date, children, ...
         </FlexBox>
         {/* MIRA logo - bottom left */}
         <Box position="absolute" bottom={16} left={32} zIndex={2}>
-          <img src="/logo-mira.png" alt="MIRA" style={{ height: 128 }} />
+          <img src={`${import.meta.env.BASE_URL}logo-mira.png`} alt="MIRA" style={{ height: 128 }} />
         </Box>
       </Box>
     </Slide>
@@ -88,7 +88,7 @@ export function MiraContentSlide({ heading, children, centered = false, fullWidt
           </FlexBox>
         </FlexBox>
         <Box position="absolute" bottom={24} right={48} zIndex={2}>
-          <img src="/logo-mira.png" alt="MIRA" style={{ height: 32 }} />
+          <img src={`${import.meta.env.BASE_URL}logo-mira.png`} alt="MIRA" style={{ height: 32 }} />
         </Box>
       </Box>
     </Slide>

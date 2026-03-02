@@ -129,7 +129,7 @@ function PresentationModule() {
         <FlexBox flexDirection="column" alignItems="center">
           <a href="https://parolla.chat" target="_blank" rel="noopener noreferrer">
             <img
-              src="/screenshots/parolla.png"
+              src={`${import.meta.env.BASE_URL}screenshots/parolla.png`}
               alt="Parolla"
               style={{ width: '100%', borderRadius: 12, boxShadow: '0 4px 12px #0001' }}
             />
@@ -144,7 +144,7 @@ function PresentationModule() {
         <FlexBox flexDirection="column" alignItems="center">
             <a href="https://docs.montagne.dev" target="_blank" rel="noopener noreferrer">
           <img
-            src="/screenshots/lampe.png"
+            src={`${import.meta.env.BASE_URL}screenshots/lampe.png`}
             alt="Lampe"
             style={{ width: '100%', borderRadius: 12, boxShadow: '0 4px 12px #0001' }}
             />
@@ -159,7 +159,7 @@ function PresentationModule() {
         <FlexBox flexDirection="column" alignItems="center">
           <a href="https://antoinefrau.github.io/media-guard/" target="_blank" rel="noopener noreferrer">
           <img
-            src="/screenshots/mediaguard.png"
+            src={`${import.meta.env.BASE_URL}screenshots/mediaguard.png`}
             alt="MediaGuard"
             style={{ width: '100%', borderRadius: 12, boxShadow: '0 4px 12px #0001' }}
           />
@@ -429,7 +429,7 @@ function PresentationModule() {
           On attaque avec HTML et CSS.
         </Text>
         <Text marginTop={24}>
-          👉 <a href="/?deck=seance-01-html-css">
+          👉 <a href={`${import.meta.env.BASE_URL}?deck=seance-01-html-css`}>
             Accéder au cours HTML & CSS &rarr;
           </a>
         </Text>
