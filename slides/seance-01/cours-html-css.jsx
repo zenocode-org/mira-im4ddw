@@ -1178,23 +1178,37 @@ p { margin: 8px 0; }`,
         </Box>
       </CodeAndPreviewSlide>
 
-      {/* --- Centrer texte vs centrer blocs : code --- */}
+      {/* --- Centrer texte vs centrer blocs : code (HTML + CSS) --- */}
       <CodeSlide
         heading="Centrer du texte ou centrer des blocs ? (code)"
-        code={`/* ① texte */ .titre { text-align: center; }
+        code={`<!-- ① text-align -->
+<h3 class="titre">Titre centré</h3>
 
-/* ② blocs */ .conteneur { display: flex; justify-content: center; align-items: center; gap: 8px; }
+<!-- ② Flexbox center -->
+<div class="conteneur"><div>A</div><div>B</div><div>C</div></div>
 
-/* ③ nav */ .nav { display: flex; justify-content: space-between; align-items: center; }
+<!-- ③ Flexbox nav -->
+<nav class="nav"><a href="#">Accueil</a><a href="#">Articles</a><a href="#">Contact</a></nav>
 
-/* ④ combo */ header h1 { text-align: center; }
-header nav { display: flex; justify-content: space-between; align-items: center; }`}
-        language="css"
-        fontSize={14}
-        notes="text-align pour le texte, Flexbox pour les blocs. Combinables dans un même header."
+<!-- ④ combo -->
+<header>
+  <h1>Mon Blog</h1>
+  <nav><a href="#">Accueil</a><a href="#">Contact</a></nav>
+</header>
+
+<style>
+.titre { text-align: center; }
+.conteneur { display: flex; justify-content: center; align-items: center; gap: 8px; }
+.nav { display: flex; justify-content: space-between; align-items: center; }
+header h1 { text-align: center; }
+header nav { display: flex; justify-content: space-between; align-items: center; }
+</style>`}
+        language="html"
+        fontSize={13}
+        notes="HTML + CSS. text-align = texte, Flexbox = blocs."
       />
 
-      {/* --- Centrer texte vs centrer blocs : aperçu --- */}
+      {/* --- Centrer texte vs centrer blocs : aperçu plein écran --- */}
       <PreviewSlide
         heading="Centrer du texte ou centrer des blocs ? (aperçu)"
         html={`<div style="display:flex; flex-direction:column; gap:14px; max-width:100%; font-size:12px;">
