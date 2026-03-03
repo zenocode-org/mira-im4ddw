@@ -1,5 +1,5 @@
-import React from 'react';
-import { FlexBox, Box, CodePane, Notes, codePaneThemes } from 'spectacle';
+import React, { useContext } from 'react';
+import { FlexBox, Box, CodePane, Notes, codePaneThemes, DeckContext } from 'spectacle';
 import { MiraContentSlide } from './MiraSlide';
 import { HtmlPreview } from './HtmlPreview';
 
@@ -8,45 +8,57 @@ const WRAP_STYLE = (
 );
 
 const defaultCodePaneProps = {
-  theme: codePaneThemes.oneLight,
   showLineNumbers: false,
-  fontSize: 13,
 };
 
-/** Reduce font size when code is long to prevent overflow. */
+/** Merge fontSize into CodePane theme (Record<string, CSSProperties>). */
+function themeWithFontSize(baseTheme, fontSize) {
+  if (!baseTheme || fontSize == null) return baseTheme;
+  const result = {};
+  for (const [key, style] of Object.entries(baseTheme)) {
+    result[key] = { ...style, fontSize: typeof fontSize === 'number' ? `${fontSize}px` : fontSize };
+  }
+  return result;
+}
+
+/** Reduce font size when code is long to prevent overflow. Uses theme.fontSizes.codePane / codePaneCompact. */
 const LONG_CODE_CHARS = 450;
 const LONG_CODE_LINES = 14;
-const COMPACT_FONT_SIZE = 11;
+const DEFAULT_CODE_PANE_FONT_SIZE = 20;
+const DEFAULT_CODE_PANE_COMPACT_FONT_SIZE = 15;
 
-function getFontSizeForCode(code, explicitFontSize) {
+function getFontSizeForCode(code, explicitFontSize, theme) {
   if (explicitFontSize != null) return explicitFontSize;
-  if (!code || typeof code !== 'string') return defaultCodePaneProps.fontSize;
+  const defaultSize = theme?.fontSizes?.codePane ?? DEFAULT_CODE_PANE_FONT_SIZE;
+  const compactSize = theme?.fontSizes?.codePaneCompact ?? DEFAULT_CODE_PANE_COMPACT_FONT_SIZE;
+  if (!code || typeof code !== 'string') return defaultSize;
   const lines = code.split('\n').length;
   const isLong = code.length > LONG_CODE_CHARS || lines > LONG_CODE_LINES;
-  return isLong ? COMPACT_FONT_SIZE : defaultCodePaneProps.fontSize;
+  return isLong ? compactSize : defaultSize;
 }
 
 /**
  * Standard CodePane with word-wrap (no horizontal overflow) and oneLight theme.
  * Use inside CodeSlide, CodeAndPreviewSlide, or any custom layout.
+ * fontSize is merged into the theme (theme prop accepts Record<string, CSSProperties>).
  */
 export function MiraCodePane({
   children,
   language = 'html',
   theme = codePaneThemes.oneLight,
   showLineNumbers = false,
-  fontSize = 13,
+  fontSize = 20,
   wrapLines = true,
   ...props
 }) {
+  const themeWithSize = themeWithFontSize(theme, fontSize);
   return (
     <Box className="mira-code-wrap" style={{ overflowX: 'hidden', overflowY: 'auto' }}>
       {wrapLines && WRAP_STYLE}
       <CodePane
         language={language}
-        theme={theme}
+        theme={themeWithSize}
         showLineNumbers={showLineNumbers}
-        fontSize={fontSize}
         {...props}
       >
         {children}
@@ -69,7 +81,8 @@ export function CodeSlide({
   notes,
   ...slideProps
 }) {
-  const computedFontSize = getFontSizeForCode(code, fontSize);
+  const deckContext = useContext(DeckContext);
+  const computedFontSize = getFontSizeForCode(code, fontSize, deckContext?.theme);
   const codeProps = { ...defaultCodePaneProps, showLineNumbers, fontSize: computedFontSize };
 
   return (
@@ -98,7 +111,7 @@ export function PreviewSlide({
 }) {
   return (
     <MiraContentSlide heading={heading} fullWidth {...slideProps}>
-      <Box flex={1} minHeight={0} display="flex" flexDirection="column" width="100%">
+      <Box flex={1} minHeight={0} display="flex" flexDirection="column" width="100%" height="100%" >
         <HtmlPreview html={html} css={css} title={title} height="100%" />
       </Box>
       {children}
@@ -131,8 +144,9 @@ export function CodeAndPreviewSlide({
     title = 'Preview',
   } = typeof preview === 'string' ? { html: preview } : preview;
 
+  const deckContext = useContext(DeckContext);
   const effectiveFontSize =
-    fontSize ?? codePaneProps.fontSize ?? getFontSizeForCode(code, undefined);
+    fontSize ?? codePaneProps.fontSize ?? getFontSizeForCode(code, undefined, deckContext?.theme);
   const paneProps = {
     ...defaultCodePaneProps,
     ...codePaneProps,

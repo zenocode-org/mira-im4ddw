@@ -23,6 +23,8 @@ export const miraTheme = {
     h3: '1.75rem',
     text: '1.25rem',
     small: '1rem',
+    codePane: 20,
+    codePaneCompact: 15,
   },
   space: [0, 8, 16, 24, 32, 48, 64, 96, 128],
 };

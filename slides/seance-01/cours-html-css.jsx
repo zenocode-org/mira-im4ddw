@@ -1,8 +1,9 @@
 import React from 'react';
-import { Deck, Text, Box, ListItem, UnorderedList, Notes, CodePane, codePaneThemes } from 'spectacle';
+import { Deck, Text, Box, ListItem, UnorderedList, Notes } from 'spectacle';
 import {
   MiraTitleSlide,
   MiraContentSlide,
+  MiraCodePane,
   CodeSlide,
   CodeAndPreviewSlide,
   PreviewSlide,
@@ -34,14 +35,10 @@ function CoursHtmlCss() {
 
 
       <MiraContentSlide heading="Le web : Client → Serveur → Réponse" centered>
-        <CodePane
-          language="text"
-          showLineNumbers={false}
-          theme={codePaneThemes.oneLight}
-          fontSize={18}
-        >{`Navigateur (Client)  →  Serveur Web  →  Navigateur affiche
+        <MiraCodePane language="text" showLineNumbers={false}>
+          {`Navigateur (Client)  →  Serveur Web  →  Navigateur affiche
       [Demande]             [Envoie]         [Résultat]`}
-      </CodePane>
+        </MiraCodePane>
         <Text fontSize="2rem" marginTop={16} color="#4a5568">
           Tu demandes une page → le serveur te l'envoie → ton navigateur l'affiche.
         </Text>
@@ -168,7 +165,6 @@ function CoursHtmlCss() {
 <p class="important" style="color:red;font-weight:bold;">Paragraphe important</p>`,
         }}
         language="html"
-        fontSize={13}
         notes="Toujours dans la balise ouvrante. Les plus courants : href, src, alt, class, id, type, name."
       >
         <Box width="100%" marginTop={8} textAlign="center">
@@ -197,7 +193,6 @@ function CoursHtmlCss() {
 #contact { margin-top: 12px; padding: 8px; background: #f0f9ff; }`,
         }}
         language="html"
-        fontSize={12}
         notes="id = unique. Class = réutilisable. Privilégie les classes en CSS."
       >
         <Box width="100%" marginTop={8} textAlign="center">
@@ -240,13 +235,12 @@ function CoursHtmlCss() {
 <footer style="background:#e2e8f0;padding:8px;border-top:1px solid #cbd5e0;">Footer</footer>`,
         }}
         language="html"
-        fontSize={15}
         notes="HTML5 a introduit des balises sémantiques."
       />
 
       {/* --- Pourquoi HTML5 --- */}
       <MiraContentSlide heading="Pourquoi HTML5 c'est mieux ?">
-        <UnorderedList fontSize="1.1rem">
+        <UnorderedList fontSize="2.1rem">
           <ListItem>
             <strong>Plus lisible</strong> pour les humains
           </ListItem>
@@ -283,7 +277,6 @@ function CoursHtmlCss() {
 <footer style="background:#cbd5e0;padding:6px;font-size:12px;">footer</footer>`,
         }}
         language="html"
-        fontSize={13}
         showLineNumbers
         notes="header, nav, main = les plus utilisés."
       />
@@ -333,7 +326,6 @@ function CoursHtmlCss() {
         }}
         language="html"
         showLineNumbers
-        fontSize={12}
         gap={16}
         notes="header en haut, nav dedans, main au centre, footer en bas."
       />
@@ -455,7 +447,6 @@ function CoursHtmlCss() {
 </ol>`,
         }}
         language="html"
-        fontSize={12}
         notes="Un <ul> ou <ol> peut contenir un <li> qui contient une autre liste."
       />
 
@@ -487,7 +478,6 @@ function CoursHtmlCss() {
 </table>`,
         }}
         language="html"
-        fontSize={12}
         notes="table = tableau, tr = ligne, th = en-tête, td = cellule. Pour données structurées."
       >
         <Box width="100%" marginTop={8} textAlign="center">
@@ -542,7 +532,6 @@ function CoursHtmlCss() {
 <h2 style="font-size:20px; text-align:center;">Titre centré</h2>`,
         }}
         language="html"
-        fontSize={13}
         notes="Syntaxe : propriété: valeur; Mieux : fichier CSS externe."
       >
         <Box width="100%" marginTop={8} textAlign="center">
@@ -587,7 +576,6 @@ input, textarea { width: 100%; padding: 8px; margin: 4px 0; box-sizing: border-b
 button { background: #00a3a3; color: white; padding: 8px 16px; border: none; cursor: pointer; }`,
         }}
         language="html"
-        fontSize={11}
         notes="action = où envoyer, method = GET ou POST. id pour label, name pour serveur."
       />
 
@@ -633,6 +621,7 @@ button { background: #00a3a3; color: white; padding: 8px 16px; border: none; cur
 </head>
 <body>
   <h1>Contenu visible</h1>
+  <p>Le <head> contient :... </p>
 </body>
 </html>`}
         preview={{
@@ -641,7 +630,6 @@ button { background: #00a3a3; color: white; padding: 8px 16px; border: none; cur
         }}
         language="html"
         showLineNumbers
-        fontSize={11}
         notes="charset = encodage. viewport = responsive. description = SEO. link CSS = on verra en détail juste après."
       >
         <Box width="100%" marginTop={8} textAlign="center">
@@ -704,7 +692,6 @@ h1 {
 /* 3. Externe (recommandé ✅) */
 <link rel="stylesheet" href="style.css">`}
         language="html"
-        fontSize={12}
         notes="Fichier externe = séparation structure/présentation. LA bonne pratique."
       >
         <Box width="100%" marginTop={8} textAlign="center">
@@ -729,8 +716,7 @@ h1 {
         preview={{
           html: `<h1 style="color:#3498db;">Titre stylé</h1>`,
         }}
-        language="html"
-        fontSize={13}
+        language="css"
         notes="Même dossier : style.css. Recharge la page pour voir les changements."
       >
         <Box width="100%" marginTop={8} textAlign="center">
@@ -762,8 +748,7 @@ p { color: black; }           /* → tous les <p> */
 .texte-rouge { color: red; }
 #titre { font-size: 28px; color: #00a3a3; }`,
         }}
-        language="html"
-        fontSize={12}
+        language="css"
         notes="Privilégie les classes ! ID = unique."
       >
         <Box width="100%" marginTop={8} textAlign="center">
@@ -813,7 +798,6 @@ p { color: black; }           /* → tous les <p> */
 |  +---------------------+  |
 +---------------------------+`}
         language="text"
-        fontSize={10}
         preview={{
           html: `<div style="background:#e2e8f0;padding:24px;min-height:100px;display:flex;align-items:center;justify-content:center;">
   <div style="margin:20px;border:3px solid #00a3a3;padding:16px;background:#fff;">
@@ -848,7 +832,7 @@ p { color: black; }           /* → tous les <p> */
   margin: 10px;
 }
 /* Content → Padding → Border → Margin */`}
-        language="html"
+        language="css"
         notes="Content = contenu, Padding = coussin intérieur, Border = cadre, Margin = espace extérieur."
         preview={{
           html: `<div style="background:#e2e8f0;padding:16px;">
@@ -888,8 +872,7 @@ p { color: black; }           /* → tous les <p> */
 .hexa { color: #FF5733; }
 .rgb { color: rgb(255, 87, 51); }
 .rgba { color: rgba(255, 87, 51, 0.8); }`}
-        language="html"
-        fontSize={12}
+        language="css"
         preview={{
           html: `<p class="nom">Par nom</p>
 <p class="hexa">Hexadécimal</p>
@@ -925,7 +908,7 @@ p { color: black; }           /* → tous les <p> */
   text-align: center;
   line-height: 1.5;
 }`}
-        language="html"
+        language="css"
         preview={{
           html: `<p class="texte-style">Texte stylé</p>`,
           css: `.texte-style {
@@ -947,6 +930,38 @@ p { color: black; }           /* → tous les <p> */
         </Box>
       </CodeAndPreviewSlide>
 
+      {/* --- text-align --- */}
+      <CodeAndPreviewSlide
+        heading="text-align : aligner le texte"
+        code={`/* CSS - aligne le texte à l'intérieur d'un bloc */
+.titre { text-align: center; }
+.texte-droite { text-align: right; }
+.texte-justifie { text-align: justify; }
+
+/* Valeurs : left (défaut), center, right, justify */`}
+        language="css"
+        preview={{
+          html: `<p class="g">text-align: left (défaut)</p>
+<p class="c">text-align: center</p>
+<p class="d">text-align: right</p>
+<p class="j">text-align: justify</p>`,
+          css: `p { margin: 8px 0; padding: 8px; background: #f1f5f9; max-width: 100%; }
+.g { text-align: left; }
+.c { text-align: center; }
+.d { text-align: right; }
+.j { text-align: justify; }`,
+        }}
+        notes="text-align centre le TEXTE dans un bloc. Ne centre pas les blocs eux-mêmes."
+      >
+        <Box width="100%" marginTop={8} textAlign="center">
+          <Text fontSize="0.85rem" as="span">
+            <a href="https://www.w3schools.com/css/css_text_align.asp" target="_blank" rel="noopener noreferrer" style={{ color: '#00a3a3' }}>
+              📖 W3Schools : CSS Text Align
+            </a>
+          </Text>
+        </Box>
+      </CodeAndPreviewSlide>
+
       {/* --- Display --- */}
       <CodeAndPreviewSlide
         heading="Display : block vs inline"
@@ -963,8 +978,7 @@ p { color: black; }           /* → tous les <p> */
 .bloc { display: block; background: #e2e8f0; margin: 4px 0; padding: 8px; }
 .inline { display: inline; background: #cbd5e0; padding: 4px 8px; }
 .inline-block { display: inline-block; background: #00a3a3; color: white; padding: 8px; }`}
-        language="html"
-        fontSize={12}
+        language="css"
         preview={{
           html: `<div class="bloc">Bloc 1</div>
 <div class="bloc">Bloc 2</div>
@@ -986,37 +1000,103 @@ p { color: black; }           /* → tous les <p> */
         </Box>
       </CodeAndPreviewSlide>
 
-      {/* --- Position --- */}
+      {/* --- Position (1/3) : static + relative — W3Schools --- */}
       <CodeAndPreviewSlide
-        heading="Position"
-        code={`<!-- HTML -->
-<div class="parent">
-  <div class="relatif">relative</div>
-  <div class="absolu">absolute</div>
-</div>
+        heading="Position (1/3) — Static et Relative"
+        code={`<!-- W3Schools : Static = flux normal, Relative = décalé -->
+<div class="static">Cet élément a position: static;</div>
+<div class="relative">Celui-ci a position: relative, décalé</div>
 
-/* CSS */
-.parent { position: relative; height: 120px; background: #e2e8f0; }
-.relatif { position: relative; top: 10px; left: 20px; background: #cbd5e0; padding: 8px; }
-.absolu { position: absolute; bottom: 10px; right: 20px; background: #00a3a3; color: white; padding: 8px; }`}
-        language="html"
-        fontSize={12}
+/* CSS - une ligne par classe */
+.static { position: static; border: 3px solid #73AD21; }
+.relative { position: relative; left: 30px; border: 3px solid #73AD21; }`}
+        language="css"
         preview={{
-          html: `<div class="parent">
-  <div class="relatif">relative</div>
-  <div class="absolu">absolute</div>
-</div>`,
-          css: `.parent { position: relative; height: 120px; background: #e2e8f0; padding: 16px; }
-.relatif { position: relative; top: 10px; left: 20px; background: #cbd5e0; padding: 8px; width: fit-content; }
-.absolu { position: absolute; bottom: 10px; right: 20px; background: #00a3a3; color: white; padding: 8px; }`,
+          html: `<div class="static">Cet élément a position: static;</div>
+<div class="relative">Celui-ci a position: relative, décalé de 30px à droite</div>`,
+          css: `.static { position: static; border: 3px solid #73AD21; }
+.relative { position: relative; left: 30px; border: 3px solid #73AD21; }`,
         }}
-        notes="Fixed = menus collés en haut."
+        notes="Static = défaut, flux normal. Relative = reste dans le flux, top/left/right/bottom le décalent."
       >
-        <Box width="100%" marginTop={8} textAlign="center">
-          <Text fontSize="0.85rem" as="span">
-            <a href="https://www.w3schools.com/css/css_positioning.asp" target="_blank" rel="noopener noreferrer" style={{ color: '#00a3a3' }}>
-              📖 W3Schools : CSS Position
-            </a>
+        <Box width="100%" marginTop={6} padding="0 8px" textAlign="left">
+          <Text fontSize="0.75rem" lineHeight={1.5} color="#64748b">
+            <strong>Static</strong> = valeur par défaut, flux normal, top/left/right/bottom n'ont pas d'effet. — <strong>Relative</strong> = positionné par rapport à sa place normale, top/left le décalent, l'espace reste réservé. <a href="https://www.w3schools.com/css/css_position.asp" target="_blank" rel="noopener noreferrer" style={{ color: '#00a3a3' }}>W3Schools</a>
+          </Text>
+        </Box>
+      </CodeAndPreviewSlide>
+
+      {/* --- Position (2/3) : fixed + absolute — W3Schools --- */}
+      <CodeAndPreviewSlide
+        heading="Position (2/3) — Fixed et Absolute"
+        code={`<!-- W3Schools : Fixed = viewport, Absolute = ancêtre posé -->
+<div class="fixed">position: fixed</div>
+<div class="relative">Parent <div class="absolute">absolute</div></div>
+
+/* CSS - une ligne par classe */
+.fixed { position: fixed; bottom: 0; right: 0; width: 100px; border: 3px solid #73AD21; background: #f0fff0; }
+.relative { position: relative; width: 100px; height: 100px; border: 3px solid green; }
+.absolute { position: absolute; top: 50px; right: 0; width: 100px; border: 3px solid red; background: #fff0f0; }`}
+        language="css"
+        preview={{
+          html: `<div class="fixed">position: fixed</div>
+<div class="relative">Parent <div class="absolute">absolute</div></div>`,
+          css: `.fixed { position: fixed; bottom: 0; right: 0; width: 100px; border: 3px solid #73AD21; background: #f0fff0; }
+.relative { position: relative; width: 100px; height: 100px; border: 3px solid green; }
+.absolute { position: absolute; top: 50px; right: 0; width: 100px; border: 3px solid red; background: #fff0f0; }`,
+        }}
+        notes="Fixed = par rapport au viewport. Absolute = par rapport au parent posé (relative/fixed/absolute)."
+      >
+        <Box width="100%" marginTop={6} padding="0 8px" textAlign="left">
+          <Text fontSize="0.75rem" lineHeight={1.5} color="#64748b">
+            <strong>Fixed</strong> = positionné par rapport au viewport, reste en place au scroll. — <strong>Absolute</strong> = sort du flux, se place par rapport au parent le plus proche avec position ≠ static. <a href="https://www.w3schools.com/css/css_positioning_fixed_absolute.asp" target="_blank" rel="noopener noreferrer" style={{ color: '#00a3a3' }}>W3Schools</a>
+          </Text>
+        </Box>
+      </CodeAndPreviewSlide>
+
+      {/* --- Position (3/3) : sticky — W3Schools --- */}
+      <CodeAndPreviewSlide
+        heading="Position (3/3) — Sticky"
+        code={`<!-- W3Schools : Sticky = relative puis fixed au scroll -->
+<div class="sticky">Sticky (top: 0)</div>
+<p>Contenu 1...</p><p>Contenu 2...</p>
+
+/* CSS - une ligne par classe */
+.sticky { position: sticky; top: 0; background: #4CAF50; color: white; border: 2px solid #2E7D32; padding: 8px; }
+p { margin: 8px 0; }`}
+        language="css"
+        preview={{
+          html: `<div class="sticky">Sticky (top: 0) — scrolle</div>
+<p>Contenu 1 — Lorem ipsum dolor sit amet.</p>
+<p>Contenu 2 — Consectetur adipiscing elit.</p>
+<p>Contenu 3 — Sed do eiusmod tempor.</p>
+<p>Contenu 4 — Ut labore et dolore magna.</p>
+<p>Contenu 5 — Aliqua quis nostrud.</p>
+<p>Contenu 5 — Aliqua quis nostrud.</p>
+<p>Contenu 5 — Aliqua quis nostrud.</p>
+<p>Contenu 5 — Aliqua quis nostrud.</p>
+<p>Contenu 5 — Aliqua quis nostrud.</p>
+<p>Contenu 5 — Aliqua quis nostrud.</p>
+<p>Contenu 5 — Aliqua quis nostrud.</p>
+<p>Contenu 5 — Aliqua quis nostrud.</p>
+<p>Contenu 5 — Aliqua quis nostrud.</p>
+<p>Contenu 5 — Aliqua quis nostrud.</p>
+<p>Contenu 5 — Aliqua quis nostrud.</p>
+<p>Contenu 5 — Aliqua quis nostrud.</p>
+<p>Contenu 5 — Aliqua quis nostrud.</p>
+<p>Contenu 5 — Aliqua quis nostrud.</p>
+<p>Contenu 5 — Aliqua quis nostrud.</p>
+<p>Contenu 5 — Aliqua quis nostrud.</p>
+<p>Contenu 5 — Aliqua quis nostrud.</p>
+<p>Contenu 5 — Aliqua quis nostrud.</p>`,
+          css: `.sticky { position: sticky; top: 0; background-color: #4CAF50; color: white; border: 2px solid #2E7D32; padding: 8px; }
+p { margin: 8px 0; }`,
+        }}
+        notes="Sticky = se comporte comme relative puis se fixe (comme fixed) quand le seuil top/left/etc. est atteint au scroll."
+      >
+        <Box width="100%" marginTop={6} padding="0 8px" textAlign="left">
+          <Text fontSize="0.75rem" lineHeight={1.5} color="#64748b">
+            <strong>Sticky</strong> = hybride relative/fixed. Au départ dans le flux, puis « colle » à la position définie (ex. top: 0) quand on scrolle. Idéal pour les barres de navigation. <a href="https://www.w3schools.com/css/css_positioning_sticky.asp" target="_blank" rel="noopener noreferrer" style={{ color: '#00a3a3' }}>W3Schools</a>
           </Text>
         </Box>
       </CodeAndPreviewSlide>
@@ -1035,7 +1115,7 @@ p { color: black; }           /* → tous les <p> */
   <div>Item 2</div>
   <div>Item 3</div>
 </div>`}
-        language="html"
+        language="css"
         preview={{
           html: `<div style="display:flex; padding:12px; gap:8px; border:2px dashed #64748b; background:#f8fafc; min-height:80px;">
   <div style="background:#dbeafe; border:2px solid #3b82f6; padding:12px; font-size:12px;">Item 1</div>
@@ -1070,7 +1150,7 @@ p { color: black; }           /* → tous les <p> */
 <div class="colonne">
   <div>1</div><div>2</div><div>3</div>
 </div>`}
-        language="html"
+        language="css"
         preview={{
           html: `<div style="display:flex; flex-direction:column; gap:8px;">
   <div style="display:flex; padding:8px; gap:6px; border:2px dashed #64748b; background:#f8fafc;">
@@ -1098,6 +1178,64 @@ p { color: black; }           /* → tous les <p> */
         </Box>
       </CodeAndPreviewSlide>
 
+      {/* --- Centrer texte vs centrer blocs : code --- */}
+      <CodeSlide
+        heading="Centrer du texte ou centrer des blocs ? (code)"
+        code={`/* ① texte */ .titre { text-align: center; }
+
+/* ② blocs */ .conteneur { display: flex; justify-content: center; align-items: center; gap: 8px; }
+
+/* ③ nav */ .nav { display: flex; justify-content: space-between; align-items: center; }
+
+/* ④ combo */ header h1 { text-align: center; }
+header nav { display: flex; justify-content: space-between; align-items: center; }`}
+        language="css"
+        fontSize={14}
+        notes="text-align pour le texte, Flexbox pour les blocs. Combinables dans un même header."
+      />
+
+      {/* --- Centrer texte vs centrer blocs : aperçu --- */}
+      <PreviewSlide
+        heading="Centrer du texte ou centrer des blocs ? (aperçu)"
+        html={`<div style="display:flex; flex-direction:column; gap:14px; max-width:100%; font-size:12px;">
+  <div>
+    <div style="font-size:10px; color:#00a3a3; font-weight:bold; margin-bottom:4px;">① text-align: center — centre le TEXTE</div>
+    <div style="border:2px solid #0ea5e9; padding:10px; background:#f0f9ff; border-radius:4px;">
+      <h3 style="text-align:center; margin:0 0 4px 0; font-size:14px; border:1px solid #38bdf8;">Titre centré</h3>
+      <p style="text-align:center; margin:0; color:#64748b; border:1px solid #38bdf8; padding:4px;">Paragraphe centré dans son bloc</p>
+    </div>
+  </div>
+  <div>
+    <div style="font-size:10px; color:#00a3a3; font-weight:bold; margin-bottom:4px;">② Flexbox — centre les BLOCS (justify-content: center)</div>
+    <div style="display:flex; justify-content:center; align-items:center; gap:8px; height:56px; border:2px solid #22c55e; background:#f0fdf4; padding:8px; border-radius:4px;">
+      <div style="background:#dbeafe; border:2px solid #3b82f6; padding:6px 10px;">A</div>
+      <div style="background:#dcfce7; border:2px solid #22c55e; padding:6px 10px;">B</div>
+      <div style="background:#fef3c7; border:2px solid #f59e0b; padding:6px 10px;">C</div>
+    </div>
+  </div>
+  <div>
+    <div style="font-size:10px; color:#00a3a3; font-weight:bold; margin-bottom:4px;">③ Flexbox — espace les liens (justify-content: space-between)</div>
+    <nav style="display:flex; justify-content:space-between; align-items:center; padding:10px; border:2px solid #a855f7; background:#faf5ff; border-radius:4px;">
+      <a href="#" style="color:#00a3a3; text-decoration:none; border:1px solid #c084fc;">Accueil</a>
+      <a href="#" style="color:#00a3a3; text-decoration:none; border:1px solid #c084fc;">Articles</a>
+      <a href="#" style="color:#00a3a3; text-decoration:none; border:1px solid #c084fc;">Contact</a>
+    </nav>
+  </div>
+  <div>
+    <div style="font-size:10px; color:#00a3a3; font-weight:bold; margin-bottom:4px;">④ Combiné : text-align sur le titre + Flexbox sur la nav</div>
+    <header style="border:2px solid #ea580c; padding:10px; background:#fff7ed; border-radius:4px;">
+      <h3 style="text-align:center; margin:0 0 8px 0; font-size:14px; border:1px solid #fb923c;">Mon Blog</h3>
+      <nav style="display:flex; justify-content:space-between; align-items:center; padding:4px 0; border:1px solid #fb923c;">
+        <a href="#" style="color:#00a3a3; text-decoration:none; font-size:11px;">Accueil</a>
+        <a href="#" style="color:#00a3a3; text-decoration:none; font-size:11px;">Articles</a>
+        <a href="#" style="color:#00a3a3; text-decoration:none; font-size:11px;">Contact</a>
+      </nav>
+    </header>
+  </div>
+</div>`}
+        notes="① text-align = texte. ②③ Flexbox = blocs. ④ Les deux ensemble pour header + nav."
+      />
+
       {/* --- Flexbox justify/align : code (CSS + HTML) --- */}
       <CodeSlide
         heading="Flexbox : justify-content &amp; align-items (code)"
@@ -1118,7 +1256,7 @@ p { color: black; }           /* → tous les <p> */
 /* Valeurs justify: flex-start, center, flex-end,
    space-between, space-around, space-evenly */
 /* Valeurs align: flex-start, center, flex-end, stretch */`}
-        language="html"
+        language="css"
         notes="La classe .nav sur <nav> applique flex, justify-content et align-items."
       />
 
@@ -1178,7 +1316,7 @@ p { color: black; }           /* → tous les <p> */
   <aside class="sidebar">fixe</aside>
   <main class="contenu">flex:1</main>
 </div>`}
-        language="html"
+        language="css"
         preview={{
           html: `<div style="display:flex; gap:12px; padding:12px; border:2px dashed #64748b; background:#f8fafc;">
   <div style="flex:0 0 80px; background:#e0e7ff; border:2px solid #6366f1; padding:8px; font-size:11px;">fixe</div>
@@ -1218,7 +1356,7 @@ p { color: black; }           /* → tous les <p> */
 </div>
 
 /* 1fr = fraction, repeat(3,1fr), minmax(200px,1fr) */`}
-        language="html"
+        language="css"
         preview={{
           html: `<div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px; padding:12px; border:2px dashed #64748b; background:#f8fafc;">
   <div style="background:#dbeafe; border:2px solid #3b82f6; padding:12px; font-size:12px;">1</div>
@@ -1257,7 +1395,7 @@ p { color: black; }           /* → tous les <p> */
   <article class="carte">Carte 3</article>
   <article class="carte">Carte 4</article>
 </div>`}
-        language="html"
+        language="css"
         preview={{
           html: `<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:12px; padding:12px; border:2px dashed #64748b; background:#f8fafc;">
   <div style="background:#dbeafe; border:2px solid #3b82f6; padding:12px; border-radius:8px; font-size:12px;">Carte 1</div>
@@ -1299,8 +1437,7 @@ img { max-width: 100%; height: auto; }
 </div>`,
           css: `p { margin: 8px 0; }`,
         }}
-        language="html"
-        fontSize={12}
+        language="css"
         notes="Un site doit être lisible sur mobile, tablette et desktop. Viewport + media queries = base."
       >
         <Box width="100%" marginTop={8} textAlign="center">
@@ -1355,7 +1492,6 @@ img { max-width: 100%; height: auto; }
 </button>`,
         }}
         language="css"
-        fontSize={12}
         notes="Tailwind = rapide, cohérent. HTML plus chargé."
       >
         <Box width="100%" marginTop={8} textAlign="center">
@@ -1445,6 +1581,7 @@ img { max-width: 100%; height: auto; }
           <ListItem>Sélecteurs (élément, classe, ID)</ListItem>
           <ListItem>Box Model (margin, border, padding, content)</ListItem>
           <ListItem>Couleurs et typographie</ListItem>
+          <ListItem>text-align (left, center, right, justify)</ListItem>
           <ListItem>Display et positionnement</ListItem>
           <ListItem>Flexbox (axes, justify/align, wrap, gap, flex)</ListItem>
           <ListItem>CSS Grid (template-columns, gap, responsive)</ListItem>
