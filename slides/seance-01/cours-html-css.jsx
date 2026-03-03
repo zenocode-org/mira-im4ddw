@@ -32,19 +32,6 @@ function CoursHtmlCss() {
         </Notes>
       </MiraTitleSlide>
 
-      {/* --- Le web --- */}
-      <CodeSlide
-        heading="Le web : Client → Serveur → Réponse"
-        code={`Navigateur (Client)  →  Serveur Web  →  Navigateur affiche
-      [Demande]             [Envoie]         [Résultat]`}
-        language="text"
-        fontSize={18}
-        notes="Tu demandes une page → le serveur te l'envoie → ton navigateur l'affiche."
-      >
-        <Text fontSize="1rem" marginTop={16} color="#4a5568">
-          C'est la base du web.
-        </Text>
-      </CodeSlide>
 
       <MiraContentSlide heading="Le web : Client → Serveur → Réponse" centered>
         <CodePane
@@ -55,17 +42,17 @@ function CoursHtmlCss() {
         >{`Navigateur (Client)  →  Serveur Web  →  Navigateur affiche
       [Demande]             [Envoie]         [Résultat]`}
       </CodePane>
-        <Text fontSize="1rem" marginTop={16} color="#4a5568">
+        <Text fontSize="2rem" marginTop={16} color="#4a5568">
           Tu demandes une page → le serveur te l'envoie → ton navigateur l'affiche.
         </Text>
       </MiraContentSlide>
 
       {/* --- HTML : la structure --- */}
       <MiraContentSlide heading="HTML : la structure">
-        <Text fontSize="1.2rem" marginBottom={16}>
+        <Text fontSize="2.2rem" marginBottom={16}>
           <strong>HTML</strong> = le squelette de la page web
         </Text>
-        <Text fontSize="1rem" color="#4a5568">
+        <Text fontSize="2rem" color="#4a5568">
           C'est la structure de ton site.
         </Text>
         <Notes>Analogie : HTML c'est les murs d'une maison. Sans les murs, pas de maison.</Notes>
@@ -73,10 +60,10 @@ function CoursHtmlCss() {
 
       {/* --- CSS : le style --- */}
       <MiraContentSlide heading="CSS : le style">
-        <Text fontSize="1.2rem" marginBottom={16}>
+        <Text fontSize="2.2rem" marginBottom={16}>
           <strong>CSS</strong> = la peau et les vêtements
         </Text>
-        <Text fontSize="1rem" color="#4a5568">
+        <Text fontSize="2rem" color="#4a5568">
           C'est le design de ton site.
         </Text>
         <Notes>CSS c'est la peinture et la décoration de ta maison.</Notes>
@@ -84,10 +71,10 @@ function CoursHtmlCss() {
 
       {/* --- JavaScript : l'interaction --- */}
       <MiraContentSlide heading="JavaScript : l'interaction">
-        <Text fontSize="1.2rem" marginBottom={16}>
+        <Text fontSize="2.2rem" marginBottom={16}>
           <strong>JavaScript</strong> = les muscles
         </Text>
-        <Text fontSize="1rem" color="#4a5568">
+        <Text fontSize="2rem" color="#4a5568">
           C'est l'interaction de ton site.
         </Text>
         <Notes>JavaScript c'est l'électricité et la plomberie : ce qui fait bouger les choses.</Notes>
@@ -95,10 +82,10 @@ function CoursHtmlCss() {
 
       {/* --- DevTools F12 --- */}
       <MiraContentSlide heading="Exemple : Ouvre ton navigateur (F12)">
-        <Text fontSize="1rem" marginBottom={16}>
+        <Text fontSize="2rem" marginBottom={16}>
           Trois onglets importants :
         </Text>
-        <UnorderedList fontSize="1.2rem">
+        <UnorderedList fontSize="2.2rem">
           <ListItem>
             <strong>Elements</strong> → HTML (structure)
           </ListItem>
@@ -117,10 +104,10 @@ function CoursHtmlCss() {
 
       {/* --- HTML = HyperText Markup Language --- */}
       <MiraContentSlide heading="HTML = HyperText Markup Language">
-        <Text fontSize="1.1rem" marginBottom={16}>
+        <Text fontSize="2.1rem" marginBottom={16}>
           <strong>C'est un langage de balisage, PAS de programmation.</strong>
         </Text>
-        <UnorderedList fontSize="1rem">
+        <UnorderedList fontSize="2rem">
           <ListItem>Pas de <code>if</code>, pas de boucles, pas de variables</ListItem>
           <ListItem>On marque des zones avec des étiquettes</ListItem>
         </UnorderedList>
@@ -165,6 +152,62 @@ function CoursHtmlCss() {
         showLineNumbers
         notes="Décortique : DOCTYPE, html, head, body."
       />
+
+      {/* --- Attributs HTML --- */}
+      <CodeAndPreviewSlide
+        heading="Attributs HTML"
+        code={`<!-- Les attributs donnent des infos aux balises -->
+<!-- Format : nom="valeur" dans la balise ouvrante -->
+
+<a href="https://exemple.com">Lien</a>
+<img src="photo.jpg" alt="Description">
+<p class="important" id="intro">Paragraphe</p>
+<input type="text" name="email" required>`}
+        preview={{
+          html: `<a href="#demo" style="color:#00a3a3;">Lien</a>
+<p class="important" style="color:red;font-weight:bold;">Paragraphe important</p>`,
+        }}
+        language="html"
+        fontSize={13}
+        notes="Toujours dans la balise ouvrante. Les plus courants : href, src, alt, class, id, type, name."
+      >
+        <Box width="100%" marginTop={8} textAlign="center">
+          <Text fontSize="0.85rem" as="span">
+            <a href="https://www.w3schools.com/html/html_attributes.asp" target="_blank" rel="noopener noreferrer" style={{ color: '#00a3a3' }}>
+              📖 W3Schools : HTML Attributes
+            </a>
+          </Text>
+        </Box>
+      </CodeAndPreviewSlide>
+
+      {/* --- Attribut id --- */}
+      <CodeAndPreviewSlide
+        heading="Attribut id : identifiant unique"
+        code={`<!-- UN SEUL élément par id dans la page -->
+<h1 id="titre-principal">Mon titre</h1>
+<section id="contact">Section contact</section>
+
+<!-- En CSS : #titre-principal { ... }
+     En JavaScript : getElementById("titre-principal")
+     Liens internes : <a href="#contact">Aller au contact</a> -->`}
+        preview={{
+          html: `<h1 id="titre-principal">Mon titre</h1>
+<section id="contact"><a href="#titre-principal">↑ Retour</a> — Section contact</section>`,
+          css: `#titre-principal { color: #00a3a3; }
+#contact { margin-top: 12px; padding: 8px; background: #f0f9ff; }`,
+        }}
+        language="html"
+        fontSize={12}
+        notes="id = unique. Class = réutilisable. Privilégie les classes en CSS."
+      >
+        <Box width="100%" marginTop={8} textAlign="center">
+          <Text fontSize="0.85rem" as="span">
+            <a href="https://www.w3schools.com/html/html_id.asp" target="_blank" rel="noopener noreferrer" style={{ color: '#00a3a3' }}>
+              📖 W3Schools : HTML id
+            </a>
+          </Text>
+        </Box>
+      </CodeAndPreviewSlide>
 
       {/* --- HTML5 Avant --- */}
       <CodeAndPreviewSlide
@@ -416,6 +459,46 @@ function CoursHtmlCss() {
         notes="Un <ul> ou <ol> peut contenir un <li> qui contient une autre liste."
       />
 
+      {/* --- Tableaux HTML --- */}
+      <CodeAndPreviewSlide
+        heading="Tableaux &lt;table&gt;, &lt;tr&gt;, &lt;td&gt;, &lt;th&gt;"
+        code={`<table>
+  <tr>
+    <th>Nom</th>
+    <th>Contact</th>
+  </tr>
+  <tr>
+    <td>Alice</td>
+    <td>alice@mail.com</td>
+  </tr>
+  <tr>
+    <td>Bob</td>
+    <td>bob@mail.com</td>
+  </tr>
+</table>`}
+        preview={{
+          html: `<table style="border-collapse:collapse; width:100%; max-width:300px;">
+  <tr><th style="border:1px solid #cbd5e0; padding:8px; background:#e2e8f0;">Nom</th>
+  <th style="border:1px solid #cbd5e0; padding:8px; background:#e2e8f0;">Contact</th></tr>
+  <tr><td style="border:1px solid #cbd5e0; padding:8px;">Alice</td>
+  <td style="border:1px solid #cbd5e0; padding:8px;">alice@mail.com</td></tr>
+  <tr><td style="border:1px solid #cbd5e0; padding:8px;">Bob</td>
+  <td style="border:1px solid #cbd5e0; padding:8px;">bob@mail.com</td></tr>
+</table>`,
+        }}
+        language="html"
+        fontSize={12}
+        notes="table = tableau, tr = ligne, th = en-tête, td = cellule. Pour données structurées."
+      >
+        <Box width="100%" marginTop={8} textAlign="center">
+          <Text fontSize="0.85rem" as="span">
+            <a href="https://www.w3schools.com/html/html_tables.asp" target="_blank" rel="noopener noreferrer" style={{ color: '#00a3a3' }}>
+              📖 W3Schools : HTML Tables
+            </a>
+          </Text>
+        </Box>
+      </CodeAndPreviewSlide>
+
       {/* --- Liens --- */}
       <CodeAndPreviewSlide
         heading="Liens &lt;a&gt;"
@@ -445,6 +528,31 @@ function CoursHtmlCss() {
         preview={`<img src="notfound.jpg" alt="Description affichée">`}
         notes="Le navigateur affiche le texte alt quand l'image ne charge pas."
       />
+
+      {/* --- Attribut style (inline) --- */}
+      <CodeAndPreviewSlide
+        heading="Attribut style : styles inline"
+        code={`<!-- CSS directement dans la balise (à éviter en prod) -->
+<p style="color: blue;">Texte bleu</p>
+<p style="background-color: lightyellow; padding: 10px;">Fond jaune</p>
+<h2 style="font-size: 24px; text-align: center;">Titre centré</h2>`}
+        preview={{
+          html: `<p style="color:#3b82f6;">Texte bleu</p>
+<p style="background-color:#fef9c3; padding:10px;">Fond jaune</p>
+<h2 style="font-size:20px; text-align:center;">Titre centré</h2>`,
+        }}
+        language="html"
+        fontSize={13}
+        notes="Syntaxe : propriété: valeur; Mieux : fichier CSS externe."
+      >
+        <Box width="100%" marginTop={8} textAlign="center">
+          <Text fontSize="0.85rem" as="span">
+            <a href="https://www.w3schools.com/html/html_styles.asp" target="_blank" rel="noopener noreferrer" style={{ color: '#00a3a3' }}>
+              📖 W3Schools : HTML Styles
+            </a>
+          </Text>
+        </Box>
+      </CodeAndPreviewSlide>
 
       {/* --- Formulaire --- */}
       <CodeAndPreviewSlide
@@ -482,6 +590,68 @@ button { background: #00a3a3; color: white; padding: 8px 16px; border: none; cur
         fontSize={11}
         notes="action = où envoyer, method = GET ou POST. id pour label, name pour serveur."
       />
+
+      {/* --- Le &lt;head&gt; : validation avant CSS --- */}
+      <MiraContentSlide heading="Le &lt;head&gt; : à quoi ça sert ?">
+        <Text fontSize="1.1rem" marginBottom={16}>
+          Le <code>&lt;head&gt;</code> contient les <strong>métadonnées</strong> du document — des infos sur la page, pas du contenu visible.
+        </Text>
+        <Text fontSize="1rem" marginBottom={12} color="#4a5568">
+          Placé entre <code>&lt;html&gt;</code> et <code>&lt;body&gt;</code>. Le contenu du <code>&lt;head&gt;</code> n'est pas affiché dans le corps de la page.
+        </Text>
+        <UnorderedList fontSize="1rem">
+          <ListItem><code>&lt;title&gt;</code> — Titre de la page (onglet, favoris, SEO)</ListItem>
+          <ListItem><code>&lt;meta&gt;</code> — Encodage, description, viewport, auteur…</ListItem>
+          <ListItem><code>&lt;link&gt;</code> — Liens vers fichiers (CSS, favicon)</ListItem>
+          <ListItem><code>&lt;style&gt;</code> — Styles CSS internes</ListItem>
+          <ListItem><code>&lt;script&gt;</code> — JavaScript</ListItem>
+        </UnorderedList>
+        <Box width="100%" marginTop={12} textAlign="center">
+          <Text fontSize="0.85rem" as="span">
+            <a href="https://www.w3schools.com/html/html_head.asp" target="_blank" rel="noopener noreferrer" style={{ color: '#00a3a3' }}>
+              📖 W3Schools : HTML Head
+            </a>
+          </Text>
+        </Box>
+        <Notes>Métadonnées = données sur les données. Le head prépare la page avant le body.</Notes>
+      </MiraContentSlide>
+
+      {/* --- Exemple &lt;head&gt; complet --- */}
+      <CodeAndPreviewSlide
+        heading="Exemple : un &lt;head&gt; bien rempli"
+        headingFontSize="1.5rem"
+        code={`<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Ma super page web">
+  <meta name="author" content="Mon Nom">
+  <title>Ma Page</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="favicon.ico">
+</head>
+<body>
+  <h1>Contenu visible</h1>
+</body>
+</html>`}
+        preview={{
+          html: `<h1>Contenu visible</h1><p style="font-size:12px;color:#64748b;margin-top:8px;">Le &lt;head&gt; contient : charset, viewport, description, title, lien CSS. Rien de tout ça n'apparaît ici !</p>`,
+          title: 'Ma Page',
+        }}
+        language="html"
+        showLineNumbers
+        fontSize={11}
+        notes="charset = encodage. viewport = responsive. description = SEO. link CSS = on verra en détail juste après."
+      >
+        <Box width="100%" marginTop={8} textAlign="center">
+          <Text fontSize="0.85rem" as="span">
+            <a href="https://www.w3schools.com/html/html_head.asp" target="_blank" rel="noopener noreferrer" style={{ color: '#00a3a3' }}>
+              📖 W3Schools : HTML Head
+            </a>
+          </Text>
+        </Box>
+      </CodeAndPreviewSlide>
 
       {/* ========== TRANSITION CSS ========== */}
       <MiraContentSlide heading="CSS = Cascading Style Sheets">
@@ -1107,6 +1277,41 @@ p { color: black; }           /* → tous les <p> */
         </Box>
       </CodeAndPreviewSlide>
 
+      {/* --- Web responsive --- */}
+      <CodeAndPreviewSlide
+        heading="Web responsive : principes"
+        code={`/* 1. Meta viewport (HTML <head>) - OBLIGATOIRE */
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+/* 2. Images qui s'adaptent */
+img { max-width: 100%; height: auto; }
+
+/* 3. Media queries - styles selon la largeur */
+@media (max-width: 768px) {
+  .sidebar { width: 100%; }
+  .main { flex-direction: column; }
+}`}
+        preview={{
+          html: `<div style="font-size:12px;">
+  <p><strong>Viewport</strong> : meta tag dans &lt;head&gt;</p>
+  <p><strong>Images</strong> : max-width: 100%</p>
+  <p><strong>Media queries</strong> : @media (max-width: 768px)</p>
+</div>`,
+          css: `p { margin: 8px 0; }`,
+        }}
+        language="html"
+        fontSize={12}
+        notes="Un site doit être lisible sur mobile, tablette et desktop. Viewport + media queries = base."
+      >
+        <Box width="100%" marginTop={8} textAlign="center">
+          <Text fontSize="0.85rem" as="span">
+            <a href="https://www.w3schools.com/html/html_responsive.asp" target="_blank" rel="noopener noreferrer" style={{ color: '#00a3a3' }}>
+              📖 W3Schools : HTML Responsive
+            </a>
+          </Text>
+        </Box>
+      </CodeAndPreviewSlide>
+
       {/* --- Flexbox vs Grid --- */}
       <MiraContentSlide heading="Flexbox vs Grid : quand utiliser quoi ?">
         <UnorderedList fontSize="0.95rem">
@@ -1221,11 +1426,13 @@ p { color: black; }           /* → tous les <p> */
 
       {/* --- Récap HTML --- */}
       <MiraContentSlide heading="Récap HTML">
-        <UnorderedList fontSize="1rem">
+        <UnorderedList fontSize="0.95rem">
           <ListItem>Rôle du front-end</ListItem>
+          <ListItem>Structure d'une page (<code>&lt;head&gt;</code> + <code>&lt;body&gt;</code>)</ListItem>
+          <ListItem><code>&lt;head&gt;</code> : métadonnées (title, meta, link CSS…)</ListItem>
           <ListItem>Balises sémantiques (header, nav, main, article, footer…)</ListItem>
-          <ListItem>Structure d'une page</ListItem>
-          <ListItem>Balises de contenu (h1, p, ul, ol, dl, a, img)</ListItem>
+          <ListItem>Attributs (href, src, alt, class, id, style)</ListItem>
+          <ListItem>Balises de contenu (h1, p, ul, ol, dl, table, a, img)</ListItem>
           <ListItem>Formulaires de base</ListItem>
         </UnorderedList>
         <Notes>Récap rapide. La pratique va clarifier.</Notes>
@@ -1233,7 +1440,7 @@ p { color: black; }           /* → tous les <p> */
 
       {/* --- Récap CSS --- */}
       <MiraContentSlide heading="Récap CSS">
-        <UnorderedList fontSize="0.95rem">
+        <UnorderedList fontSize="0.9rem">
           <ListItem>Syntaxe CSS</ListItem>
           <ListItem>Sélecteurs (élément, classe, ID)</ListItem>
           <ListItem>Box Model (margin, border, padding, content)</ListItem>
@@ -1241,6 +1448,7 @@ p { color: black; }           /* → tous les <p> */
           <ListItem>Display et positionnement</ListItem>
           <ListItem>Flexbox (axes, justify/align, wrap, gap, flex)</ListItem>
           <ListItem>CSS Grid (template-columns, gap, responsive)</ListItem>
+          <ListItem>Web responsive (viewport, images, media queries)</ListItem>
           <ListItem>TailwindCSS</ListItem>
           <ListItem>Normes W3C</ListItem>
         </UnorderedList>
@@ -1301,6 +1509,21 @@ p { color: black; }           /* → tous les <p> */
           <ListItem>
             <a href="https://developer.mozilla.org/fr/docs/Web/HTML/Element/form" target="_blank" rel="noopener noreferrer" style={{ color: '#00a3a3' }}>MDN : &lt;form&gt;</a>
           </ListItem>
+          <ListItem>
+            <a href="https://www.w3schools.com/html/html_attributes.asp" target="_blank" rel="noopener noreferrer" style={{ color: '#00a3a3' }}>W3Schools : HTML Attributes</a>
+          </ListItem>
+          <ListItem>
+            <a href="https://www.w3schools.com/html/html_id.asp" target="_blank" rel="noopener noreferrer" style={{ color: '#00a3a3' }}>W3Schools : HTML id</a>
+          </ListItem>
+          <ListItem>
+            <a href="https://www.w3schools.com/html/html_tables.asp" target="_blank" rel="noopener noreferrer" style={{ color: '#00a3a3' }}>W3Schools : HTML Tables</a>
+          </ListItem>
+          <ListItem>
+            <a href="https://www.w3schools.com/html/html_styles.asp" target="_blank" rel="noopener noreferrer" style={{ color: '#00a3a3' }}>W3Schools : HTML Styles</a>
+          </ListItem>
+          <ListItem>
+            <a href="https://www.w3schools.com/html/html_head.asp" target="_blank" rel="noopener noreferrer" style={{ color: '#00a3a3' }}>W3Schools : HTML Head</a>
+          </ListItem>
         </UnorderedList>
         <Text fontSize="0.9rem" marginBottom={12} fontWeight="bold" color="#00a3a3">
           CSS
@@ -1323,6 +1546,9 @@ p { color: black; }           /* → tous les <p> */
           </ListItem>
           <ListItem>
             <a href="https://css-tricks.com/snippets/css/complete-guide-grid/" target="_blank" rel="noopener noreferrer" style={{ color: '#00a3a3' }}>CSS-Tricks : Guide CSS Grid</a>
+          </ListItem>
+          <ListItem>
+            <a href="https://www.w3schools.com/html/html_responsive.asp" target="_blank" rel="noopener noreferrer" style={{ color: '#00a3a3' }}>W3Schools : HTML Responsive</a>
           </ListItem>
         </UnorderedList>
         <Text fontSize="0.9rem" marginBottom={12} fontWeight="bold" color="#00a3a3">

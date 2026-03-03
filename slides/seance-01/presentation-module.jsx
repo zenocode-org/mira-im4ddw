@@ -110,7 +110,7 @@ function PresentationModule() {
           Antoine Frau
         </Text>
         <Text fontSize="1.25rem" marginBottom={20} color="#4a5568">
-          Ingénieur Full Stack — Python, Next.js — spécialisé en LLM
+          Ingénieur Full Stack — Python, Typescript — spécialisé en LLM/Ops
         </Text>
         <UnorderedList fontSize="1.05rem" color="#4a5568" marginBottom={16}>
           <ListItem>Master info (Univ. Corse) → échange à Montréal pour la dernière année</ListItem>
@@ -365,17 +365,6 @@ function PresentationModule() {
         <Notes>Être transparent sur les critères.</Notes>
       </MiraContentSlide>
 
-      <MiraContentSlide heading="Timeline du projet">
-        <Text fontSize="1rem" marginBottom={8}><strong>Maintenant → 10 mai</strong> : Apprendre les technologies</Text>
-        <Text fontSize="1rem" marginBottom={8}><strong>13 mai</strong> : Cours API (dernière brique)</Text>
-        <Text fontSize="1rem" marginBottom={8}><strong>13-21 mai</strong> : Développement intensif</Text>
-        <Text fontSize="1rem" marginBottom={8}><strong>21 mai</strong> : Dernière séance TP</Text>
-        <Text fontSize="1.1rem" marginTop={16} fontWeight="bold" color="#00a3a3">
-          22 mai : Présentation finale (3h)
-        </Text>
-        <Notes>Rassurer : ~9 jours entre 13 et 22 mai pour développer.</Notes>
-      </MiraContentSlide>
-
       <MiraContentSlide heading="Environnement de travail">
         <UnorderedList>
           <ListItem><strong>VS Code</strong> (éditeur)</ListItem>
@@ -397,14 +386,6 @@ function PresentationModule() {
         <Notes>Ces conseils sont cruciaux.</Notes>
       </MiraContentSlide>
 
-      <MiraContentSlide heading="Questions fréquentes">
-        <Text marginBottom={8}>« Je peux travailler en binôme ? » → Non, projet individuel</Text>
-        <Text marginBottom={8}>« Je peux utiliser Bootstrap/Tailwind ? » → Oui pour le CSS</Text>
-        <Text marginBottom={8}>« Je peux proposer un autre projet ? » → Oui</Text>
-        <Text marginBottom={8}>« Je peux utiliser ChatGPT/Copilot/Cursor ? » → Pour de l'aide oui, mais tu dois tout comprendre demande lui d'expliquer les choses en détail.</Text>
-        <Notes>Clarifier ces points dès maintenant.</Notes>
-      </MiraContentSlide>
-
       <MiraContentSlide heading="À toi de choisir !">
         <Text fontSize="1.2rem" marginBottom={24}>
           Réfléchis d'ici la prochaine séance :
@@ -421,7 +402,11 @@ function PresentationModule() {
       </MiraContentSlide>
 
       <MiraContentSlide heading="Questions ?">
-        
+        <Text marginBottom={8}>« Je peux travailler en binôme ? » → Non, projet individuel</Text>
+        <Text marginBottom={8}>« Je peux utiliser Bootstrap/Tailwind ? » → Oui pour le CSS</Text>
+        <Text marginBottom={8}>« Je peux proposer un autre projet ? » → Oui</Text>
+        <Text marginBottom={8}>« Je peux utiliser ChatGPT/Copilot/Cursor ? » → Pour de l'aide oui, mais tu dois tout comprendre demande lui d'expliquer les choses en détail.</Text>
+        <Notes>Clarifier ces points dès maintenant.</Notes>
       </MiraContentSlide>
 
       <MiraContentSlide heading={<MiraTitle fontSize="2.5rem" marginBottom={24}>C'est parti !</MiraTitle>}>
