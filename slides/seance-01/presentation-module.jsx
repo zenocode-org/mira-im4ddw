@@ -354,15 +354,19 @@ function PresentationModule() {
         <Notes>Insister sur Git et envoi des slides AVANT.</Notes>
       </MiraContentSlide>
 
-      <MiraContentSlide heading="Critères d'évaluation">
-        <Text fontSize="1.1rem" marginBottom={12}><strong>Fonctionnalité</strong> : Ça marche ?</Text>
-        <Text fontSize="1.1rem" marginBottom={12}><strong>Qualité du code</strong> : C'est propre ?</Text>
-        <Text fontSize="1.1rem" marginBottom={12}><strong>Présentation</strong> : C'est clair ?</Text>
-        <Text fontSize="1.1rem" marginBottom={12}><strong>Créativité</strong> : C'est original ?</Text>
+      <MiraContentSlide heading="Critères d'évaluation (acquis du module)">
+        <Text fontSize="1.1rem" marginBottom={12}><strong>Technologies frontend (HTML/CSS/JS)</strong> — /5</Text>
+        <Text fontSize="0.9rem" marginBottom={16} color="#4a5568">Pages Web/mobile, JS dynamique, requêtes asynchrones, bibliothèques</Text>
+        <Text fontSize="1.1rem" marginBottom={12}><strong>Backend PHP et POO</strong> — /5</Text>
+        <Text fontSize="0.9rem" marginBottom={16} color="#4a5568">PHP, programmation orientée objet</Text>
+        <Text fontSize="1.1rem" marginBottom={12}><strong>Interaction avec la base de données</strong> — /5</Text>
+        <Text fontSize="0.9rem" marginBottom={16} color="#4a5568">Requêtes SQL, sécurité, modèle de données</Text>
+        <Text fontSize="1.1rem" marginBottom={12}><strong>Conception et intégration d'API</strong> — /5</Text>
+        <Text fontSize="0.9rem" marginBottom={16} color="#4a5568">Création d'API, endpoints, requêtes asynchrones</Text>
         <Text fontSize="0.95rem" marginTop={16} color="#4a5568">
           Un projet simple mais parfaitement exécuté vaut mieux qu'un ambitieux non fonctionnel.
         </Text>
-        <Notes>Être transparent sur les critères.</Notes>
+        <Notes>Être transparent sur les critères liés aux acquis.</Notes>
       </MiraContentSlide>
 
       <MiraContentSlide heading="Environnement de travail">

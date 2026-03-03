@@ -188,7 +188,7 @@ function CoursHtmlCss() {
      Liens internes : <a href="#contact">Aller au contact</a> -->`}
         preview={{
           html: `<h1 id="titre-principal">Mon titre</h1>
-<section id="contact"><a href="#titre-principal">↑ Retour</a> — Section contact</section>`,
+<section id="contact">Section contact</section>`,
           css: `#titre-principal { color: #00a3a3; }
 #contact { margin-top: 12px; padding: 8px; background: #f0f9ff; }`,
         }}
