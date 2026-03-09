@@ -31,6 +31,13 @@ const theme = {
   fontSizes: miraTheme.fontSizes,
 };
 
+// Transition sans animation (slides instantanés)
+const noTransition = {
+  from: { opacity: 1, transform: 'translateX(0)' },
+  enter: { opacity: 1, transform: 'translateX(0)' },
+  leave: { opacity: 1, transform: 'translateX(0)' },
+};
+
 const PROJECTS = [
   {
     title: 'Gestionnaire de Tâches Collaboratif',
@@ -78,7 +85,7 @@ const PROJECTS = [
 
 function PresentationModule() {
   return (
-    <Deck theme={theme} template={(props) => <MiraDeckTemplate {...props} />}>
+    <Deck theme={theme} template={(props) => <MiraDeckTemplate {...props} />} transition={noTransition}>
       <MiraTitleSlide
         title="Présentation du Module IM4DDW"
         subtitle="Développement Web"

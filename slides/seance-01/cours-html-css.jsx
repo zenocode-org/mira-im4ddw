@@ -19,9 +19,15 @@ const theme = {
   fontSizes: miraTheme.fontSizes,
 };
 
+const noTransition = {
+  from: { opacity: 1, transform: 'translateX(0)' },
+  enter: { opacity: 1, transform: 'translateX(0)' },
+  leave: { opacity: 1, transform: 'translateX(0)' },
+};
+
 function CoursHtmlCss() {
   return (
-    <Deck theme={theme} template={(props) => <MiraDeckTemplate {...props} />}>
+    <Deck theme={theme} template={(props) => <MiraDeckTemplate {...props} />} transition={noTransition}>
       <MiraTitleSlide
         title="Introduction à HTML5 & CSS3"
         subtitle="Cours Théorique - Séance 1"
@@ -452,7 +458,7 @@ function CoursHtmlCss() {
 
       {/* --- Tableaux HTML --- */}
       <CodeAndPreviewSlide
-        heading="Tableaux &lt;table&gt;, &lt;tr&gt;, &lt;td&gt;, &lt;th&gt;"
+        heading="Tableaux `&lt;table&gt;, &lt;tr&gt;, &lt;td&gt;, &lt;th&gt;`"
         code={`<table>
   <tr>
     <th>Nom</th>
