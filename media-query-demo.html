@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Démo Media Queries</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: #f8fafc;
+    }
+
+    .header {
+      background: #0ea5e9;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.5rem;
+    }
+
+    .layout {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .sidebar {
+      flex: 0 0 250px;
+      background: #e2e8f0;
+      padding: 1rem;
+      border-radius: 8px;
+    }
+
+    .main {
+      flex: 1;
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .info {
+      padding: 1rem;
+      margin: 1rem;
+      background: #fef3c7;
+      border-radius: 8px;
+      font-size: 0.95rem;
+    }
+
+    .breakpoint-indicator {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      padding: 0.5rem 1rem;
+      background: #334155;
+      color: white;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-family: monospace;
+    }
+
+    /* Media query : tablette (max-width: 768px) */
+    @media (max-width: 768px) {
+      .layout {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+      }
+
+      .header {
+        font-size: 1.25rem;
+        background: #22c55e;
+      }
+
+      .breakpoint-indicator::after {
+        content: " ≤ 768px (tablette)";
+      }
+    }
+
+    /* Media query : mobile (max-width: 480px) */
+    @media (max-width: 480px) {
+      .header {
+        font-size: 1rem;
+        padding: 0.75rem;
+        background: #f59e0b;
+      }
+
+      .layout {
+        padding: 0.5rem;
+      }
+
+      .breakpoint-indicator {
+        bottom: 0.5rem;
+        right: 0.5rem;
+        font-size: 0.75rem;
+      }
+
+      .breakpoint-indicator::after {
+        content: " ≤ 480px (mobile)";
+      }
+    }
+
+    /* Desktop : aucun breakpoint actif */
+    @media (min-width: 769px) {
+      .breakpoint-indicator::after {
+        content: " > 768px (desktop)";
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    Démo Media Queries — redimensionne la fenêtre !
+  </header>
+
+  <div class="info">
+    <strong>Comment ça marche :</strong>
+    <ul>
+      <li><strong>Desktop</strong> (&gt; 768px) : sidebar à gauche, fond bleu</li>
+      <li><strong>Tablette</strong> (≤ 768px) : colonnes empilées, fond vert</li>
+      <li><strong>Mobile</strong> (≤ 480px) : layout compact, fond orange</li>
+    </ul>
+    L’indicateur en bas à droite affiche le breakpoint actif.
+  </div>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h3>Sidebar</h3>
+      <p>Sur desktop, je suis à gauche. Sur tablette/mobile, je passe au-dessus du contenu principal.</p>
+    </aside>
+    <main class="main">
+      <h2>Contenu principal</h2>
+      <p>Les media queries appliquent des styles différents selon la largeur du viewport. C’est la base du web responsive.</p>
+      <pre style="background:#f1f5f9; padding:1rem; border-radius:6px; overflow-x:auto;">
+@media (max-width: 768px) {
+  .layout { flex-direction: column; }
+  .sidebar { width: 100%; }
+}</pre>
+    </main>
+  </div>
+
+  <div class="breakpoint-indicator"></div>
+</body>
+</html>
