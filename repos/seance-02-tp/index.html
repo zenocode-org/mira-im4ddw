@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <img src="images/image.png" alt="Photo de profil" class="photo-profil">
+        <h1>Prénom Nom</h1>
+        <p>Étudiant·e en développement web</p>
+        
+        <nav>
+            <ul>
+                <li><a href="#a-propos">À propos</a></li>
+                <li><a href="#competences">Compétences</a></li>
+                <li><a href="#projets">Projets</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="a-propos">
+            <h2>À propos de moi</h2>
+            <p>
+                Bonjour ! Je m'appelle [Ton prénom] et je suis passionné·e par le développement web.
+                Actuellement étudiant·e ingénieur·e, j'apprends à créer des sites modernes et performants.
+            </p>
+            <p>
+                J'aime résoudre des problèmes complexes et transformer des idées en interfaces
+                intuitives et élégantes.
+            </p>
+        </section>
+
+        <section id="competences" class="section-competences">
+            <h2>Mes compétences</h2>
+            
+            <article class="competence-card">
+                <h3>Front-end</h3>
+                <ul>
+                    <li>HTML5 - Structure sémantique</li>
+                    <li>CSS3 - Design et mise en page</li>
+                    <li>JavaScript - Interactivité</li>
+                </ul>
+            </article>
+            
+            <article class="competence-card">
+                <h3>Back-end</h3>
+                <ul>
+                    <li>PHP - En cours d'apprentissage</li>
+                    <li>MySQL - Bases de données</li>
+                </ul>
+            </article>
+            
+            <article class="competence-card">
+                <h3>Outils</h3>
+                <ul>
+                    <li>Git & GitHub</li>
+                    <li>VS Code</li>
+                    <li>Terminal</li>
+                </ul>
+            </article>
+        </section>
+
+        <section id="projets">
+            <h2>Mes projets</h2>
+            
+            <article class="projet">
+                <h3>Site web personnel</h3>
+                <p>
+                    Création d'un portfolio responsive pour présenter mes compétences
+                    et mes réalisations. Technologies : HTML5, CSS3.
+                </p>
+            </article>
+            
+            <article class="projet">
+                <h3>Application to-do list</h3>
+                <p>
+                    Application web simple pour gérer ses tâches quotidiennes.
+                    Technologies : HTML, CSS, JavaScript.
+                </p>
+            </article>
+            
+            <article class="projet">
+                <h3>Mini-jeu en JavaScript</h3>
+                <p>
+                    Jeu de morpion interactif avec gestion des scores.
+                    Technologies : JavaScript, CSS Grid.
+                </p>
+            </article>
+        </section>
+
+        <section id="contact">
+            <h2>Me contacter</h2>
+            
+            <form>
+                <div>
+                    <label for="nom">Nom :</label>
+                    <input type="text" id="nom" name="nom" required>
+                </div>
+                
+                <div>
+                    <label for="email">Email :</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div>
+                    <label for="message">Message :</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+                </div>
+                
+                <button type="submit">Envoyer</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Prénom Nom - Tous droits réservés</p>
+        <nav>
+            <a href="https://github.com/ton-username" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="https://linkedin.com/in/ton-profil" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a href="mailto:ton.email@exemple.com">Email</a>
+        </nav>
+    </footer>
+</body>
+</html>
