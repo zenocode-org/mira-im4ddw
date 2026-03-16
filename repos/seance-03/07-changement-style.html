@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Changement de style — Exemple JS</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 500px; margin: 40px auto; padding: 24px; }
+    button { padding: 10px 18px; font-size: 1rem; border: none; border-radius: 8px; background: #00a3a3; color: white; cursor: pointer; margin: 4px; }
+    button:hover { background: #008a8a; }
+    #texteStyle { font-size: 1.2rem; margin: 20px 0; }
+    a { color: #00a3a3; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <p><a href="index-exemples.html">← Retour aux exemples</a></p>
+  <h1>Changer les styles au clic</h1>
+  <p>element.style</p>
+  <p id="texteStyle">Clique pour changer ma couleur !</p>
+  <button id="btnRouge">Rouge</button>
+  <button id="btnBleu">Bleu</button>
+  <button id="btnReset">Reset</button>
+  <script>
+    let texte = document.getElementById('texteStyle');
+    document.getElementById('btnRouge').addEventListener('click', function() {
+      texte.style.color = '#dc2626';
+    });
+    document.getElementById('btnBleu').addEventListener('click', function() {
+      texte.style.color = '#2563eb';
+    });
+    document.getElementById('btnReset').addEventListener('click', function() {
+      texte.style.color = '';
+    });
+  </script>
+</body>
+</html>

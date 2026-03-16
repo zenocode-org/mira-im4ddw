@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Key listener — Exemple JS</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 500px; margin: 40px auto; padding: 24px; }
+    .output {
+      margin-top: 20px;
+      padding: 16px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      min-height: 80px;
+      font-family: monospace;
+      font-size: 0.95rem;
+    }
+    .output kbd { background: #e2e8f0; padding: 2px 6px; border-radius: 4px; }
+    a { color: #00a3a3; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <p><a href="index-exemples.html">← Retour aux exemples</a></p>
+  <h1>Événement clavier (keydown)</h1>
+  <p>Appuie sur une touche (n'importe où sur la page) pour voir les infos.</p>
+  <p><strong>Astuce :</strong> Entrée, Espace, Échap, flèches…</p>
+  <div class="output" id="output">En attente d'une touche…</div>
+  <script>
+    let output = document.getElementById('output');
+
+    document.addEventListener('keydown', function(e) {
+      output.innerHTML = 
+        '<strong>Dernière touche :</strong><br>' +
+        '• <kbd>e.key</kbd> = "' + e.key + '"<br>' +
+        '• <kbd>e.code</kbd> = "' + e.code + '"<br>' +
+        '• <kbd>e.keyCode</kbd> = ' + e.keyCode + ' (déprécié)<br>' +
+        '• Ctrl = ' + e.ctrlKey + ', Alt = ' + e.altKey + ', Shift = ' + e.shiftKey;
+    });
+  </script>
+</body>
+</html>

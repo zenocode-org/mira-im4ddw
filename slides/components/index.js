@@ -6,6 +6,8 @@ export { HtmlPreview } from './HtmlPreview';
 export {
   MiraCodePane,
   CodeSlide,
+  TwinCodeSlide,
   PreviewSlide,
   CodeAndPreviewSlide,
+  CodePreviewConsoleSlide,
 } from './CodeSlide';

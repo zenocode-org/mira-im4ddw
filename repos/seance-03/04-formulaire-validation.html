@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulaire validation — Exemple JS</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 500px; margin: 40px auto; padding: 24px; }
+    button { padding: 10px 18px; font-size: 1rem; border: none; border-radius: 8px; background: #00a3a3; color: white; cursor: pointer; }
+    button:hover { background: #008a8a; }
+    input { padding: 10px 14px; font-size: 1rem; border: 1px solid #cbd5e1; border-radius: 8px; width: 100%; max-width: 280px; }
+    .error { color: #dc2626; font-size: 0.9rem; margin-top: 4px; display: block; }
+    a { color: #00a3a3; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <p><a href="index-exemples.html">← Retour aux exemples</a></p>
+  <h1>Formulaire avec validation</h1>
+  <p>trim(), length, messages d'erreur</p>
+  <form id="formulaire">
+    <input type="text" id="nom" placeholder="Ton nom (min. 3 caractères)">
+    <span id="erreur-nom" class="error"></span>
+    <br><br>
+    <button type="button" id="btnEnvoyer">Envoyer</button>
+  </form>
+  <script>
+    let inputNom = document.getElementById('nom');
+    let erreurNom = document.getElementById('erreur-nom');
+    let btn = document.getElementById('btnEnvoyer');
+
+    btn.addEventListener('click', function() {
+      erreurNom.textContent = '';
+      let nom = inputNom.value.trim();
+      if (nom === '') {
+        erreurNom.textContent = 'Le nom est requis';
+        return;
+      }
+      if (nom.length < 3) {
+        erreurNom.textContent = 'Le nom doit faire au moins 3 caractères';
+        return;
+      }
+      alert('Bienvenue, ' + nom + ' !');
+    });
+  </script>
+</body>
+</html>

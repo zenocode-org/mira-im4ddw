@@ -2,11 +2,12 @@ import React, { useMemo } from 'react';
 import { Box } from 'spectacle';
 
 /**
- * Renders HTML (and optional CSS) in a live preview iframe.
- * Perfect for HTML/CSS course - students see the actual execution.
+ * Renders HTML (and optional CSS, optional script) in a live preview iframe.
+ * Perfect for HTML/CSS/JS course - students see the actual execution.
  */
-export function HtmlPreview({ html, css = '', title = 'Preview', height }) {
+export function HtmlPreview({ html, css = '', script = '', title = 'Preview', height }) {
   const iframeContent = useMemo(() => {
+    const scriptTag = script ? `\n<script>${script}</script>` : '';
     const fullHtml = `<!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -24,11 +25,11 @@ export function HtmlPreview({ html, css = '', title = 'Preview', height }) {
   </style>
 </head>
 <body>
-${html}
+${html}${scriptTag}
 </body>
 </html>`;
     return fullHtml;
-  }, [html, css, title]);
+  }, [html, css, script, title]);
 
   const fillHeight = height === '100%';
   return (
@@ -52,7 +53,7 @@ ${html}
           height: '100%',
           border: 'none',
         }}
-        sandbox="allow-scripts"
+        sandbox="allow-scripts allow-modals allow-forms"
       />
     </Box>
   );

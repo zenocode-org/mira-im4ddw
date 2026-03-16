@@ -2,6 +2,8 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import PresentationModule from './seance-01/presentation-module.jsx';
 import CoursHtmlCss from './seance-01/cours-html-css.jsx';
+import CoursJavascriptInteractif from './seance-03/cours-javascript-interactif.jsx';
+import CoursJavascriptTheorique from './seance-03/cours-javascript-theorique.jsx';
 
 const SESSIONS = [
   {
@@ -11,6 +13,23 @@ const SESSIONS = [
     decks: [
       { key: 'seance-01-module', title: 'Présentation du Module', component: PresentationModule },
       { key: 'seance-01-html-css', title: 'Cours HTML/CSS', component: CoursHtmlCss },
+    ],
+  },
+  {
+    id: 'seance-03',
+    title: 'Séance 3',
+    date: '17 mars 2025',
+    decks: [
+      {
+        key: 'seance-03-javascript-theorique',
+        title: 'Cours JavaScript Théorique',
+        component: CoursJavascriptTheorique,
+      },
+      {
+        key: 'seance-03-javascript-interactif',
+        title: 'Cours JavaScript Interactif',
+        component: CoursJavascriptInteractif,
+      },
     ],
   },
 ];

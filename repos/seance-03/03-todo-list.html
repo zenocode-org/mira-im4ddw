@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-do list — Exemple JS</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 500px; margin: 40px auto; padding: 24px; }
+    button { padding: 10px 18px; font-size: 1rem; border: none; border-radius: 8px; background: #00a3a3; color: white; cursor: pointer; }
+    button:hover { background: #008a8a; }
+    input { padding: 10px 14px; font-size: 1rem; border: 1px solid #cbd5e1; border-radius: 8px; width: 100%; max-width: 280px; }
+    ul { list-style: none; padding: 0; margin: 12px 0 0 0; }
+    li { padding: 12px 16px; margin: 8px 0; border-radius: 8px; background: #f1f5f9; cursor: pointer; }
+    li:hover { background: #e2e8f0; }
+    a { color: #00a3a3; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <p><a href="index-exemples.html">← Retour aux exemples</a></p>
+  <h1>To-do list minimaliste</h1>
+  <p>createElement, appendChild, remove, localStorage — Clique sur une tâche pour la supprimer. Entrée pour ajouter.</p>
+  <input type="text" id="nouvelle-tache" placeholder="Nouvelle tâche...">
+  <button id="btn-ajouter">Ajouter</button>
+  <ul id="liste-taches"></ul>
+  <script>
+    let inputTache = document.getElementById('nouvelle-tache');
+    let btnAjouter = document.getElementById('btn-ajouter');
+    let listeTaches = document.getElementById('liste-taches');
+
+    function ajouterTache(texte) {
+      if (!texte.trim()) return;
+      let li = document.createElement('li');
+      li.textContent = texte;
+      li.addEventListener('click', function() {
+        li.remove();
+        sauvegarder();
+      });
+      listeTaches.appendChild(li);
+      inputTache.value = '';
+      sauvegarder();
+    }
+
+    function sauvegarder() {
+      let taches = Array.from(listeTaches.querySelectorAll('li')).map(li => li.textContent);
+      localStorage.setItem('todo-seance3', JSON.stringify(taches));
+    }
+
+    function charger() {
+      let taches = JSON.parse(localStorage.getItem('todo-seance3') || '[]');
+      taches.forEach(ajouterTache);
+    }
+
+    btnAjouter.addEventListener('click', function() {
+      ajouterTache(inputTache.value);
+    });
+
+    inputTache.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') ajouterTache(inputTache.value);
+    });
+
+    charger();
+  </script>
+</body>
+</html>
