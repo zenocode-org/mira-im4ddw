@@ -11,7 +11,7 @@
  *   -d, --deck <key>  Deck key for slide links (makes headings clickable)
  *   --base-url <url>  Base URL for links (default: https://zenocode-org.github.io/mira-im4ddw/)
  *
- * Supports: MiraTitleSlide, MiraContentSlide, CodeSlide, CodeAndPreviewSlide, PreviewSlide
+ * Supports: MiraTitleSlide, MiraContentSlide, CodeSlide, CodeAndPreviewSlide, CodePreviewConsoleSlide, PreviewSlide
  */
 
 import { readFileSync, writeFileSync } from 'fs';
@@ -24,6 +24,7 @@ const SLIDE_COMPONENTS = new Set([
   'MiraContentSlide',
   'CodeSlide',
   'CodeAndPreviewSlide',
+  'CodePreviewConsoleSlide',
   'PreviewSlide',
 ]);
 
@@ -56,7 +57,32 @@ function getTemplateLiteralProp(node, name) {
   return null;
 }
 
+/** Get identifier name from prop (e.g. code={createElementCode} -> "createElementCode") */
+function getIdentifierProp(node, name) {
+  if (!node?.attributes) return null;
+  const attr = node.attributes.find(
+    (a) => a.type === 'JSXAttribute' && a.name?.name === name
+  );
+  const expr = attr?.value?.expression;
+  if (expr?.type === 'Identifier') return expr.name;
+  return null;
+}
+
+/** Get code: template literal, or variable reference resolved via variableMap */
+function getCodeProp(node, name, variableMap = {}) {
+  const lit = getTemplateLiteralProp(node, name);
+  if (lit) return lit;
+  const id = getIdentifierProp(node, name);
+  if (id && id in variableMap) return variableMap[id];
+  return null;
+}
+
 function getObjectProp(node, name) {
+  return getObjectPropWithRefs(node, name, {});
+}
+
+/** Get object prop, resolving Identifier values via variableMap */
+function getObjectPropWithRefs(node, name, variableMap = {}) {
   if (!node?.attributes) return null;
   const attr = node.attributes.find(
     (a) => a.type === 'JSXAttribute' && a.name?.name === name
@@ -67,9 +93,12 @@ function getObjectProp(node, name) {
   for (const prop of obj.properties) {
     if (prop.type === 'ObjectProperty' && prop.key?.name) {
       const key = prop.key.name;
-      if (prop.value?.type === 'StringLiteral') result[key] = prop.value.value;
-      else if (prop.value?.type === 'TemplateLiteral')
-        result[key] = prop.value.quasis.map((q) => q.value.raw).join('');
+      const val = prop.value;
+      if (val?.type === 'StringLiteral') result[key] = val.value;
+      else if (val?.type === 'TemplateLiteral')
+        result[key] = val.quasis.map((q) => q.value.raw).join('');
+      else if (val?.type === 'Identifier' && val.name in variableMap)
+        result[key] = variableMap[val.name];
     }
   }
   return result;
@@ -225,8 +254,17 @@ function escapeMdHeading(s) {
     .replace(/&apos;/g, "'");
 }
 
+function previewContentToMarkdown(preview) {
+  if (!preview?.html) return '';
+  const parts = [];
+  parts.push('```html\n' + preview.html.trim() + '\n```');
+  if (preview.css?.trim()) parts.push('\n```css\n' + preview.css.trim() + '\n```');
+  if (preview.script?.trim()) parts.push('\n```javascript\n' + preview.script.trim() + '\n```');
+  return parts.join('\n');
+}
+
 function slideToMarkdown(slide, index, options = {}) {
-  const { type, title, subtitle, date, heading, code, html, language, notes, blocks, preview } = slide;
+  const { type, title, subtitle, date, heading, code, language, notes, blocks, preview, consoleSnippet } = slide;
   const lines = [];
   const { baseUrl, deck } = options;
   const slideIndex = index - 1; // 0-based for URL
@@ -253,14 +291,38 @@ function slideToMarkdown(slide, index, options = {}) {
   } else if (type === 'CodeAndPreviewSlide') {
     lines.push(formatHeading(1, escapeMdHeading(heading || 'Code + Aperçu')));
     if (code) lines.push('\n```' + (language || '') + '\n' + code.trim() + '\n```');
-    if (preview?.html) lines.push('\n*Prévisualisation HTML incluse dans la présentation.*');
+    if (preview?.html) lines.push('\n' + previewContentToMarkdown(preview));
     if (blocks?.length) lines.push('\n' + blocksToMarkdown(blocks));
+  } else if (type === 'CodePreviewConsoleSlide') {
+    lines.push(formatHeading(1, escapeMdHeading(heading || 'Code + Aperçu + Console')));
+    if (code) lines.push('\n```' + (language || '') + '\n' + code.trim() + '\n```');
+    if (preview?.html) lines.push('\n' + previewContentToMarkdown(preview));
+    if (consoleSnippet) lines.push('\n*À taper dans la console :*\n\n```javascript\n' + consoleSnippet.trim() + '\n```');
   } else if (type === 'PreviewSlide') {
     lines.push(formatHeading(1, escapeMdHeading(heading || 'Aperçu')));
-    if (html) lines.push('\n*Prévisualisation HTML incluse dans la présentation.*');
+    if (preview?.html) lines.push('\n' + previewContentToMarkdown(preview));
   }
 
   return lines.join('\n');
+}
+
+/** Extract const/let/var declarations with string/template literal values */
+function extractVariableMap(ast) {
+  const map = {};
+  traverse.default(ast, {
+    VariableDeclarator(path) {
+      const id = path.node.id;
+      const init = path.node.init;
+      if (id?.type !== 'Identifier') return;
+      if (!init) return;
+      let value = null;
+      if (init.type === 'StringLiteral') value = init.value;
+      else if (init.type === 'TemplateLiteral' && init.quasis?.length)
+        value = init.quasis.map((q) => q.value.raw).join('');
+      if (value != null) map[id.name] = value;
+    },
+  });
+  return map;
 }
 
 function convertJsxToMarkdown(source, options = {}) {
@@ -269,6 +331,7 @@ function convertJsxToMarkdown(source, options = {}) {
     plugins: ['jsx'],
   });
 
+  const variableMap = extractVariableMap(ast);
   const slides = [];
 
   traverse.default(ast, {
@@ -291,25 +354,49 @@ function convertJsxToMarkdown(source, options = {}) {
         slide.blocks = extractContentSlideChildren(path.node.children);
       } else if (name === 'CodeSlide') {
         slide.heading = getStringProp(path.node.openingElement, 'heading');
-        slide.code = getTemplateLiteralProp(path.node.openingElement, 'code');
+        slide.code = getCodeProp(path.node.openingElement, 'code', variableMap);
         slide.language = getStringProp(path.node.openingElement, 'language') || 'html';
-        for (const child of path.node.children) {
-          if (child.type === 'JSXElement' && child.openingElement?.name?.name === 'Notes')
-            slide.notes = jsxChildrenToMarkdown(child.children).trim();
+        slide.notes = getStringProp(path.node.openingElement, 'notes');
+        if (!slide.notes) {
+          for (const child of path.node.children) {
+            if (child.type === 'JSXElement' && child.openingElement?.name?.name === 'Notes')
+              slide.notes = jsxChildrenToMarkdown(child.children).trim();
+          }
         }
       } else if (name === 'CodeAndPreviewSlide') {
         slide.heading = getStringProp(path.node.openingElement, 'heading');
-        slide.code = getTemplateLiteralProp(path.node.openingElement, 'code');
-        slide.preview = getObjectProp(path.node.openingElement, 'preview');
+        slide.code = getCodeProp(path.node.openingElement, 'code', variableMap);
+        const previewObj = getObjectPropWithRefs(path.node.openingElement, 'preview', variableMap);
+        const previewStr = getTemplateLiteralProp(path.node.openingElement, 'preview');
+        slide.preview = previewObj ?? (previewStr ? { html: previewStr } : null);
         slide.language = getStringProp(path.node.openingElement, 'language') || 'html';
         slide.blocks = extractContentSlideChildren(path.node.children);
         for (const child of path.node.children) {
           if (child.type === 'JSXElement' && child.openingElement?.name?.name === 'Notes')
             slide.notes = jsxChildrenToMarkdown(child.children).trim();
         }
+      } else if (name === 'CodePreviewConsoleSlide') {
+        slide.heading = getStringProp(path.node.openingElement, 'heading');
+        slide.code = getCodeProp(path.node.openingElement, 'code', variableMap);
+        const previewObj = getObjectPropWithRefs(path.node.openingElement, 'preview', variableMap);
+        const previewStr = getTemplateLiteralProp(path.node.openingElement, 'preview');
+        slide.preview = previewObj ?? (previewStr ? { html: previewStr } : null);
+        slide.language = getStringProp(path.node.openingElement, 'language') || 'html';
+        slide.consoleSnippet = getCodeProp(path.node.openingElement, 'consoleSnippet', variableMap);
+        slide.notes = getStringProp(path.node.openingElement, 'notes');
+        if (!slide.notes) {
+          for (const child of path.node.children) {
+            if (child.type === 'JSXElement' && child.openingElement?.name?.name === 'Notes')
+              slide.notes = jsxChildrenToMarkdown(child.children).trim();
+          }
+        }
       } else if (name === 'PreviewSlide') {
         slide.heading = getStringProp(path.node.openingElement, 'heading');
-        slide.html = getTemplateLiteralProp(path.node.openingElement, 'html');
+        slide.preview = {
+          html: getTemplateLiteralProp(path.node.openingElement, 'html'),
+          css: getTemplateLiteralProp(path.node.openingElement, 'css') || '',
+          script: getTemplateLiteralProp(path.node.openingElement, 'script') || '',
+        };
         for (const child of path.node.children) {
           if (child.type === 'JSXElement' && child.openingElement?.name?.name === 'Notes')
             slide.notes = jsxChildrenToMarkdown(child.children).trim();

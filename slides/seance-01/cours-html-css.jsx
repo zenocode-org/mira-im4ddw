@@ -27,7 +27,7 @@ const noTransition = {
 
 function CoursHtmlCss() {
   return (
-    <Deck theme={theme} template={(props) => <MiraDeckTemplate {...props} />} transition={noTransition}>
+    <Deck theme={theme} template={(props) => <MiraDeckTemplate {...props} />} transition={noTransition} onClick={() => console.log('Click')}>
       <MiraTitleSlide
         title="Introduction à HTML5 & CSS3"
         subtitle="Cours Théorique - Séance 1"
