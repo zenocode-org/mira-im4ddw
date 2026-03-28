@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>TP 2 — Tape la taupe</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    margin: 0 auto;
+    min-height: 100vh;
+    max-width: 40rem;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: system-ui, sans-serif;
+    text-align: center;
+  }
+  button { padding: 0.4rem 0.75rem; cursor: pointer; }
+  .grille { display: grid; grid-template-columns: repeat(3, 4rem); gap: 6px; margin-top: 8px; }
+  .case { width: 4rem; height: 4rem; border: 1px solid #333; display: grid; place-items: center; cursor: pointer; background: #eee; }
+  .taupe { background: #f59e0b; }
+</style>
+</head>
+<body>
+  <h1>Mini-jeu : tape la taupe</h1>
+  <p>
+    <strong>Score : <span id="score">0</span></strong>
+    <button type="button" id="start">Démarrer</button>
+  </p>
+  <div class="grille" id="grille"></div>
+
+<script>
+/* À toi : corrige les sélecteurs (#grille, #start, #score). */
+const grid = document.querySelector('#plateau');
+const start = document.querySelector('#go');
+const scoreEl = document.querySelector('#points');
+
+let cells = [];
+let score = 0;
+let active = -1;
+let loop = null;
+let finPartie = null;
+
+function build() {
+  /* À toi : vider la grille, créer 9 div.case, les ajouter à grid et à cells.
+     Chaque case : au clic, si c’est la case active (taupe), +1 au score, retirer la classe taupe, remettre active à -1.
+     Indice : utilise let dans la boucle for, pas var, pour l’indice de case. */
+}
+
+build();
+
+start.addEventListener('click', function () {
+  /* Étape 4 du README (4.1 → 4.4) : questions d’exploration puis blocs à compléter /
+     corrige le bug — reset, setInterval, setTimeout ~10 s. loop et finPartie déjà déclarées. */
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Formulaire Impossible</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #111;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Formulaire */
+form {
+    background: #222;
+    padding: 30px;
+    border-radius: 10px;
+    width: 300px;
+    position: relative;
+}
+
+input, textarea {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+}
+
+/* Bouton */
+button {
+    padding: 10px;
+    background: red;
+    border: none;
+    color: white;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.2s;
+}
+
+/* Rétrécit au hover */
+button:hover {
+    transform: scale(0.6);
+}
+</style>
+</head>
+
+<body>
+
+<form id="form">
+    <h2>Contactez-nous 😈</h2>
+
+    <input type="text" id="name" placeholder="Nom">
+    <input type="email" id="email" placeholder="Email">
+    <textarea id="message" placeholder="Message"></textarea>
+
+    <button id="submit">Envoyer</button>
+</form>
+
+<script>
+const button = document.getElementById("submit");
+const form = document.getElementById("form");
+
+/* 1. Bouton qui fuit la souris */
+button.addEventListener("mouseover", () => {
+    const x = Math.random() * 200 - 100;
+    const y = Math.random() * 200 - 100;
+    button.style.transform = `translate(${x}px, ${y}px) scale(0.6)`;
+});
+
+/* 2. Champ message qui s'écrit tout seul */
+const message = document.getElementById("message");
+
+message.addEventListener("focus", () => {
+    let text = "Je ne peux pas envoyer ce formulaire 😭";
+    let i = 0;
+
+    const interval = setInterval(() => {
+        message.value += text[i];
+        i++;
+        if (i >= text.length) clearInterval(interval);
+    }, 50);
+});
+
+/* 3. Faux submit */
+form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    alert("❌ Erreur : votre motivation est insuffisante.");
+});
+</script>
+
+</body>
+</html>

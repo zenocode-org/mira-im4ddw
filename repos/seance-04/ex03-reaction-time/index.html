@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>TP 3 — Temps de réaction</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: system-ui, sans-serif;
+    background: linear-gradient(160deg, #eef2ff 0%, #f8fafc 45%, #e0e7ff 100%);
+    color: #1e293b;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+  }
+  .en-tete {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    max-width: 36rem;
+  }
+  .en-tete h1 { font-size: 1.35rem; font-weight: 700; margin: 0 0 0.35rem; }
+  .en-tete p { margin: 0; font-size: 0.95rem; color: #64748b; line-height: 1.45; }
+  .carte-jeu {
+    width: min(100%, 26rem);
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(148, 163, 184, 0.12);
+    padding: 1.75rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  .instruction {
+    margin: 0 0 1.25rem;
+    font-size: 1rem;
+    line-height: 1.55;
+    color: #334155;
+  }
+  .instruction kbd {
+    display: inline-block;
+    padding: 0.2em 0.55em;
+    font-size: 0.9em;
+    font-family: ui-monospace, monospace;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    box-shadow: 0 1px 0 #e2e8f0;
+  }
+  #zone-reaction {
+    width: 100%;
+    min-height: 140px;
+    border: 2px solid #cbd5e1;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    margin: 0 0 1rem;
+    background: #e2e8f0;
+    color: #475569;
+    font-weight: 600;
+    font-size: 1.05rem;
+    font-family: inherit;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+  #zone-reaction.vert {
+    background: #22c55e;
+    border-color: #16a34a;
+    color: #fff;
+  }
+  #zone-reaction:focus-visible {
+    outline: 3px solid #6366f1;
+    outline-offset: 3px;
+  }
+  .ligne-resultat {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #64748b;
+  }
+  .ligne-resultat strong {
+    font-variant-numeric: tabular-nums;
+    color: #0f172a;
+    font-size: 1.15em;
+  }
+</style>
+</head>
+<body>
+  <header class="en-tete">
+    <h1>Mini-jeu : temps de réaction</h1>
+    <p>Suis les consignes dans <strong>README.md</strong> (même dossier) et complète le script en bas de page.</p>
+  </header>
+
+  <section class="carte-jeu" aria-label="Zone de jeu">
+    <p class="instruction">
+      Utilise le clavier : <kbd>Espace</kbd> pour lancer une manche, <kbd>R</kbd> pour tout réinitialiser.
+      Quand le bouton ci-dessous devient vert, clique dessus le plus vite possible.
+    </p>
+    <button type="button" id="zone-reaction" aria-label="Appuie sur Espace pour lancer une manche, puis clique quand c’est vert">Appuie sur Espace</button>
+    <p class="ligne-resultat">Résultat : <strong id="resultat-ms">–</strong> ms</p>
+  </section>
+
+<script>
+/* --- Petits utilitaires --- */
+
+/* Entier aléatoire dans [0, n[ ; sert à varier le délai avant que la zone ne passe au vert. */
+function rand(n) {
+  return Math.floor(Math.random() * n);
+}
+
+/* --- Éléments du DOM --- */
+
+/* Zone cliquable : un seul bouton dans la carte de jeu. */
+const pad = document.querySelector('#zone-reaction');
+/* [Trou 1] Même principe que pour pad : le sélecteur doit correspondre exactement à l’attribut id
+   de l’élément qui affiche le nombre de millisecondes (voir le HTML au-dessus). Si ce n’est pas
+   le bon nœud, la suite lèvera une erreur ou n’affichera rien au bon endroit. */
+const msEl = document.querySelector('#resultat_ms');
+
+/* --- État du jeu (partagé entre le clavier, le timer et le clic) --- */
+
+var messageAccueil = 'Appuie sur Espace';
+/* Quand la zone est verte et prête à être mesurée, cette variable doit être > 0 ; sinon elle vaut 0. */
+var greenAt = 0;
+/* Référence du délai en cours ; null s’il n’y a pas de timer actif. */
+var to = null;
+
+/* Remet l’interface dans un état « prêt » : annule un timer, enlève le vert, remet textes et tiret. */
+function resetEtat() {
+  if (to !== null) {
+    clearTimeout(to);
+    to = null;
+  }
+  greenAt = 0;
+  pad.classList.remove('vert');
+  pad.textContent = messageAccueil;
+  msEl.textContent = '–';
+}
+
+/* Une manche : tout remettre à plat, puis attendre un délai aléatoire avant d’afficher le vert. */
+function lancerManche() {
+  resetEtat();
+  pad.textContent = 'Attends…';
+  to = setTimeout(function () {
+    to = null;
+    pad.classList.add('vert');
+    pad.textContent = 'Clique !';
+    /* [Trou 2] Enregistre ici le moment où la zone devient « valide » pour un clic, en millisecondes
+       depuis une origine fixe (voir doc MDN sur l’objet Date). Le 0 ci-dessous est un placeholder :
+       il faut une valeur qui reflète l’instant présent, sinon le gestionnaire de clic ne pourra pas
+       mesurer un écart avec Date.now() au moment du clic. */
+    greenAt = 0;
+  }, 500 + rand(2000));
+}
+
+/* --- Clavier : lancer une manche ou tout réinitialiser --- */
+
+document.addEventListener('keydown', function (event) {
+  if (event.repeat) return;
+
+  /* [Bug 1] La barre d’espace : event.key === 'Space' peut être vrai dans certains environnements
+     mais pas de façon fiable partout. Combine plutôt event.code === 'Space' et/ou event.key === ' '
+     (voir README). Ouvre la doc KeyboardEvent ou affiche event dans la console si besoin. */
+  if (event.key === 'Space') {
+    event.preventDefault();
+    lancerManche();
+    return;
+  }
+
+  if (event.key === 'r' || event.key === 'R') {
+    resetEtat();
+  }
+});
+
+/* --- Clic : mesure si le vert est déjà là, sinon « trop tôt » si un timer tourne encore --- */
+
+pad.addEventListener('click', function () {
+  if (greenAt > 0) {
+    var ms = Date.now() - greenAt;
+    msEl.textContent = String(ms);
+    greenAt = 0;
+    /* [Bug 2] Après un clic valide, le bouton doit redevenir gris et afficher le message d’accueil,
+       mais le nombre de ms vient d’être écrit dans msEl : quelle fonction du script remet aussi
+       ce résultat à « – » ? Trouve un moyen d’obtenir le même effet visuel sur le bouton sans
+       repasser par une réinitialisation complète de l’affichage du résultat. */
+    resetEtat();
+    return;
+  }
+  if (to !== null) {
+    clearTimeout(to);
+    to = null;
+    pad.textContent = 'Trop tôt !';
+    msEl.textContent = '—';
+    greenAt = 0;
+    return;
+  }
+});
+</script>
+</body>
+</html>
