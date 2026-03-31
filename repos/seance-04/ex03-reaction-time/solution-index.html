@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>TP 3 — Temps de réaction — corrigé</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: system-ui, sans-serif;
+    background: linear-gradient(160deg, #eef2ff 0%, #f8fafc 45%, #e0e7ff 100%);
+    color: #1e293b;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+  }
+  .en-tete {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    max-width: 36rem;
+  }
+  .en-tete h1 { font-size: 1.35rem; font-weight: 700; margin: 0 0 0.35rem; }
+  .en-tete p { margin: 0; font-size: 0.95rem; color: #64748b; line-height: 1.45; }
+  .carte-jeu {
+    width: min(100%, 26rem);
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(148, 163, 184, 0.12);
+    padding: 1.75rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+  .instruction {
+    margin: 0 0 1.25rem;
+    font-size: 1rem;
+    line-height: 1.55;
+    color: #334155;
+  }
+  .instruction kbd {
+    display: inline-block;
+    padding: 0.2em 0.55em;
+    font-size: 0.9em;
+    font-family: ui-monospace, monospace;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    box-shadow: 0 1px 0 #e2e8f0;
+  }
+  #zone-reaction {
+    width: 100%;
+    min-height: 140px;
+    border: 2px solid #cbd5e1;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    margin: 0 0 1rem;
+    background: #e2e8f0;
+    color: #475569;
+    font-weight: 600;
+    font-size: 1.05rem;
+    font-family: inherit;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+  #zone-reaction.vert {
+    background: #22c55e;
+    border-color: #16a34a;
+    color: #fff;
+  }
+  #zone-reaction:focus-visible {
+    outline: 3px solid #6366f1;
+    outline-offset: 3px;
+  }
+  .ligne-resultat {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #64748b;
+  }
+  .ligne-resultat strong {
+    font-variant-numeric: tabular-nums;
+    color: #0f172a;
+    font-size: 1.15em;
+  }
+</style>
+</head>
+<body>
+  <header class="en-tete">
+    <h1>Mini-jeu : temps de réaction</h1>
+    <p><em>Fichier corrigé de référence — à ne pas rendre tel quel comme copie d’élève.</em></p>
+  </header>
+
+  <section class="carte-jeu" aria-label="Zone de jeu">
+    <p class="instruction">
+      Utilise le clavier : <kbd>Espace</kbd> pour lancer une manche, <kbd>R</kbd> pour tout réinitialiser.
+      Quand le bouton ci-dessous devient vert, clique dessus le plus vite possible.
+    </p>
+    <button type="button" id="zone-reaction" aria-label="Appuie sur Espace pour lancer une manche, puis clique quand c’est vert">Appuie sur Espace</button>
+    <p class="ligne-resultat">Résultat : <strong id="resultat-ms">–</strong> ms</p>
+  </section>
+
+<script>
+const pad = document.querySelector('#zone-reaction');
+const msEl = document.querySelector('#resultat-ms');
+
+var greenAt = 0;
+var to = null;
+
+function rand(n) {
+  return Math.floor(Math.random() * n);
+}
+
+var messageAccueil = 'Appuie sur Espace';
+
+function resetEtat() {
+  if (to !== null) {
+    clearTimeout(to);
+    to = null;
+  }
+  greenAt = 0;
+  pad.classList.remove('vert');
+  pad.textContent = messageAccueil;
+  msEl.textContent = '–';
+}
+
+function lancerManche() {
+  resetEtat();
+  pad.textContent = 'Attends…';
+  to = setTimeout(function () {
+    to = null;
+    pad.classList.add('vert');
+    pad.textContent = 'Clique !';
+    greenAt = Date.now();
+  }, 500 + rand(2000));
+}
+
+document.addEventListener('keydown', function (event) {
+  if (event.repeat) return;
+
+  if (event.code === 'Space' || event.key === ' ') {
+    event.preventDefault();
+    lancerManche();
+    return;
+  }
+
+  if (event.key === 'r' || event.key === 'R') {
+    resetEtat();
+  }
+});
+
+pad.addEventListener('click', function () {
+  if (greenAt > 0) {
+    var ms = Date.now() - greenAt;
+    msEl.textContent = String(ms);
+    /* Ne pas appeler resetEtat() ici : il remettrait le résultat à « – ».
+       On remet seulement la zone « prête » pour une prochaine manche. */
+    greenAt = 0;
+    pad.classList.remove('vert');
+    pad.textContent = messageAccueil;
+    return;
+  }
+  if (to !== null) {
+    clearTimeout(to);
+    to = null;
+    pad.textContent = 'Trop tôt !';
+    msEl.textContent = '—';
+    greenAt = 0;
+    return;
+  }
+});
+</script>
+</body>
+</html>

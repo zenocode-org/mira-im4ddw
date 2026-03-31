@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>TP 1 — Compteur de clics (bonus) — corrigé</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    margin: 0 auto;
+    min-height: 100vh;
+    max-width: 40rem;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: system-ui, sans-serif;
+    text-align: center;
+  }
+  button { padding: 0.4rem 0.75rem; cursor: pointer; }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .ligne-config {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem 1rem;
+    margin-bottom: 0.75rem;
+  }
+  .ligne-config label { display: flex; align-items: center; gap: 0.35rem; }
+  #erreur-duree { color: #b00020; min-height: 1.25em; margin: 0.25rem 0 0; font-size: 0.9rem; }
+  #meilleur-score-ligne { margin-top: 0.5rem; }
+</style>
+</head>
+<body>
+  <h1>Mini-jeu : clics en X secondes</h1>
+  <p><em>Fichier corrigé « aller plus loin » — à ne pas rendre tel quel comme copie d’élève.</em></p>
+
+  <div class="ligne-config">
+    <label for="duree">
+      Durée (s)
+      <input type="number" id="duree" min="5" max="120" value="10" step="1" />
+    </label>
+  </div>
+  <p id="erreur-duree" role="alert" aria-live="polite"></p>
+
+  <p>
+    <button type="button" id="demarrer">Démarrer</button>
+    <button type="button" id="clic" disabled>Clique ici !</button>
+    <span>Temps : <span id="temps">10</span> s</span>
+    <strong>Score : <span id="score">0</span></strong>
+  </p>
+
+  <p id="meilleur-score-ligne">Meilleur score : <span id="meilleur-score">—</span></p>
+  <p>
+    <button type="button" id="reset-record">Réinitialiser le record</button>
+  </p>
+
+<script>
+const STORAGE_KEY = "ex01-click-counter-meilleur-score";
+
+const start = document.querySelector("#demarrer");
+const btn = document.querySelector("#clic");
+const timeEl = document.querySelector("#temps");
+const scoreEl = document.querySelector("#score");
+const dureeInput = document.querySelector("#duree");
+const erreurDuree = document.querySelector("#erreur-duree");
+const meilleurScoreEl = document.querySelector("#meilleur-score");
+const resetRecord = document.querySelector("#reset-record");
+
+let time = 10;
+let score = 0;
+let timer = null;
+let running = false;
+
+function lireMeilleurScore() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (raw === null) return null;
+  const n = Number(raw);
+  return Number.isFinite(n) ? n : null;
+}
+
+function afficherMeilleurScore() {
+  const best = lireMeilleurScore();
+  meilleurScoreEl.textContent = best === null ? "—" : String(best);
+}
+
+function mettreAJourTempsAfficheDepuisChamp() {
+  const v = parseInt(String(dureeInput.value), 10);
+  if (Number.isFinite(v) && v >= Number(dureeInput.min) && v <= Number(dureeInput.max)) {
+    timeEl.textContent = String(v);
+  }
+}
+
+function dureeValide() {
+  const v = parseInt(String(dureeInput.value), 10);
+  const min = Number(dureeInput.min);
+  const max = Number(dureeInput.max);
+  if (!Number.isFinite(v)) {
+    erreurDuree.textContent = "Saisis un nombre entier.";
+    return null;
+  }
+  if (v < min || v > max) {
+    erreurDuree.textContent = "La durée doit être entre " + min + " et " + max + " secondes.";
+    return null;
+  }
+  erreurDuree.textContent = "";
+  return v;
+}
+
+afficherMeilleurScore();
+dureeInput.addEventListener("change", mettreAJourTempsAfficheDepuisChamp);
+dureeInput.addEventListener("input", function () {
+  if (!running) mettreAJourTempsAfficheDepuisChamp();
+});
+
+start.addEventListener("click", function () {
+  if (running) return;
+
+  const duree = dureeValide();
+  if (duree === null) return;
+
+  time = duree;
+  score = 0;
+  timeEl.textContent = String(time);
+  scoreEl.textContent = String(score);
+  btn.disabled = false;
+  start.disabled = true;
+  dureeInput.disabled = true;
+  running = true;
+
+  timer = setInterval(function () {
+    time = time - 1;
+    timeEl.textContent = String(time);
+    if (time === 0) {
+      clearInterval(timer);
+      timer = null;
+      btn.disabled = true;
+      start.disabled = false;
+      dureeInput.disabled = false;
+      running = false;
+
+      const ancien = lireMeilleurScore();
+      if (ancien === null || score > ancien) {
+        localStorage.setItem(STORAGE_KEY, String(score));
+        afficherMeilleurScore();
+      }
+    }
+  }, 1000);
+});
+
+btn.addEventListener("click", function () {
+  if (btn.disabled) return;
+  score = score + 1;
+  scoreEl.textContent = String(score);
+});
+
+resetRecord.addEventListener("click", function () {
+  localStorage.removeItem(STORAGE_KEY);
+  afficherMeilleurScore();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>TP 1 — Compteur de clics (10 s) — corrigé</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    margin: 0 auto;
+    min-height: 100vh;
+    max-width: 40rem;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: system-ui, sans-serif;
+    text-align: center;
+  }
+  button { padding: 0.4rem 0.75rem; cursor: pointer; }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+</style>
+</head>
+<body>
+  <h1>Mini-jeu : clics en 10 secondes</h1>
+  <p><em>Fichier corrigé de référence — à ne pas rendre tel quel comme copie d’élève.</em></p>
+  <p>
+    <button type="button" id="demarrer">Démarrer</button>
+    <button type="button" id="clic" disabled>Clique ici !</button>
+    <span>Temps : <span id="temps">10</span> s</span>
+    <strong>Score : <span id="score">0</span></strong>
+  </p>
+
+<script>
+const start = document.querySelector("#demarrer");
+const btn = document.querySelector("#clic");
+const timeEl = document.querySelector("#temps");
+const scoreEl = document.querySelector("#score");
+
+let time = 10;
+let score = 0;
+let timer = null;
+let running = false;
+
+start.addEventListener("click", function () {
+  if (running) return;
+
+  time = 10;
+  score = 0;
+  timeEl.textContent = String(time);
+  scoreEl.textContent = String(score);
+  btn.disabled = false;
+  start.disabled = true;
+  running = true;
+
+  timer = setInterval(function () {
+    time = time - 1;
+    timeEl.textContent = String(time);
+    if (time === 0) {
+      clearInterval(timer);
+      timer = 0;
+      btn.disabled = true;
+      start.disabled = false;
+      running = false;
+    }
+  }, 1000);
+});
+
+btn.addEventListener("click", function () {
+  if (btn.disabled) return;
+  score = score + 1;
+  scoreEl.textContent = String(score);
+});
+</script>
+</body>
+</html>

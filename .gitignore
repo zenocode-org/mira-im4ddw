@@ -6,3 +6,4 @@ agent/
 film-library/
 
 output.md
+*.csv

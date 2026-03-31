@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>TP 2 — Tape la taupe — corrigé</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    margin: 0 auto;
+    min-height: 100vh;
+    max-width: 40rem;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: system-ui, sans-serif;
+    text-align: center;
+  }
+  button { padding: 0.4rem 0.75rem; cursor: pointer; }
+  .grille { display: grid; grid-template-columns: repeat(3, 4rem); gap: 6px; margin-top: 8px; }
+  .case { width: 4rem; height: 4rem; border: 1px solid #333; display: grid; place-items: center; cursor: pointer; background: #eee; }
+  .taupe { background: #f59e0b; }
+</style>
+</head>
+<body>
+  <h1>Mini-jeu : tape la taupe</h1>
+  <p><em>Fichier corrigé de référence — à ne pas rendre tel quel comme copie d’élève.</em></p>
+  <p>
+    <strong>Score : <span id="score">0</span></strong>
+    <button type="button" id="demarrer">Démarrer</button>
+  </p>
+  <div class="grille" id="grille"></div>
+
+<script>
+const grid = document.querySelector('#grille');
+const start = document.querySelector('#demarrer');
+const scoreEl = document.querySelector('#score');
+
+let cells = [];
+let score = 0;
+let loop = null;
+let active = -1;
+let finPartie = null;
+
+function build() {
+  grid.innerHTML = '';
+  cells = [];
+  for (let i = 0; i < 9; i++) {
+    const cell = document.createElement('div');
+    cell.classList.add('case');
+    grid.appendChild(cell);
+    cells.push(cell);
+    cell.addEventListener('click', function () {
+      if (active === -1 || i !== active) return;
+      score += 1;
+      scoreEl.textContent = String(score);
+      cells[active].classList.remove('taupe');
+      active = -1;
+    });
+  }
+}
+
+build();
+
+start.addEventListener('click', function () {
+  if (loop !== null) {
+    clearInterval(loop);
+    loop = null;
+  }
+  if (finPartie !== null) {
+    clearTimeout(finPartie);
+    finPartie = null;
+  }
+
+  score = 0;
+  scoreEl.textContent = '0';
+  if (active !== -1 && cells[active]) {
+    cells[active].classList.remove('taupe');
+  }
+  active = -1;
+
+  loop = setInterval(function () {
+    if (active !== -1) {
+      cells[active].classList.remove('taupe');
+    }
+    active = Math.floor(Math.random() * 9);
+    cells[active].classList.add('taupe');
+  }, 700);
+
+  finPartie = setTimeout(function () {
+    clearInterval(loop);
+    loop = null;
+    finPartie = null;
+    if (active !== -1) {
+      cells[active].classList.remove('taupe');
+    }
+    active = -1;
+  }, 10000);
+});
+</script>
+</body>
+</html>
