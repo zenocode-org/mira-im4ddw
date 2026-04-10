@@ -149,7 +149,7 @@ export function TwinCodeSlide({
   return (
     <MiraContentSlide heading={heading} fullWidth {...slideProps}>
       <FlexBox flex={1} width="100%" minHeight={0} gap={gap} alignItems="stretch">
-        <Box flex={1} minWidth={0} minHeight={0} overflow="auto" display="flex" flexDirection="column">
+        <FlexBox flex={1} minWidth={0} minHeight={0} overflow="auto" display="flex" flexDirection="column">
           {leftLabel && (
             <Box paddingBottom={4} fontSize="0.9rem" color="#64748b" fontWeight={600}>
               {leftLabel}
@@ -158,8 +158,8 @@ export function TwinCodeSlide({
           <MiraCodePane language={leftLanguage} {...paneProps}>
             {leftCode}
           </MiraCodePane>
-        </Box>
-        <Box flex={1} minWidth={0} minHeight={0} overflow="auto" display="flex" flexDirection="column">
+        </FlexBox>
+        <FlexBox flex={1} minWidth={0} minHeight={0} overflow="auto" display="flex" flexDirection="column">
           {rightLabel && (
             <Box paddingBottom={4} fontSize="0.9rem" color="#64748b" fontWeight={600}>
               {rightLabel}
@@ -168,7 +168,7 @@ export function TwinCodeSlide({
           <MiraCodePane language={rightLanguage} {...paneProps}>
             {rightCode}
           </MiraCodePane>
-        </Box>
+        </FlexBox>
       </FlexBox>
       {children}
       {notes && <Notes>{notes}</Notes>}

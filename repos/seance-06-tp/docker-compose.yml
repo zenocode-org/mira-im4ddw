@@ -1,0 +1,11 @@
+# Environnement PHP + Apache pour le TP Séance 6.
+# Démarrage : docker compose up -d
+# Site : http://localhost:8080 (fichiers dans ./src)
+
+services:
+  web:
+    image: php:8.3-apache
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src:/var/www/html

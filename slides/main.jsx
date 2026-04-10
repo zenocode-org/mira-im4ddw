@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import PresentationModule from './seance-01/presentation-module.jsx';
 import CoursHtmlCss from './seance-01/cours-html-css.jsx';
 import CoursJavascriptTheorique from './seance-03/cours-javascript-theorique.jsx';
+import CoursPhpTheorique from './seance-06/cours-php-theorique.jsx';
 
 const SESSIONS = [
   {
@@ -23,6 +24,18 @@ const SESSIONS = [
         key: 'seance-03-javascript-theorique',
         title: 'Cours JavaScript Théorique',
         component: CoursJavascriptTheorique,
+      },
+    ],
+  },
+  {
+    id: 'seance-06',
+    title: 'Séance 6',
+    date: '14 avril 2026',
+    decks: [
+      {
+        key: 'seance-06-php-theorique',
+        title: 'Cours PHP théorique',
+        component: CoursPhpTheorique,
       },
     ],
   },
