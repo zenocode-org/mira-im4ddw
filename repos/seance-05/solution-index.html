@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TP — Météo (Open-Meteo) — corrigé</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, sans-serif;
+      background: linear-gradient(165deg, #0f172a 0%, #1e3a5f 45%, #0c4a6e 100%);
+      color: #e2e8f0;
+      padding: 1.5rem;
+    }
+    .wrap {
+      max-width: 28rem;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin: 0 0 0.25rem;
+      letter-spacing: -0.02em;
+    }
+    .subtitle {
+      font-size: 0.875rem;
+      color: #94a3b8;
+      margin: 0 0 1.25rem;
+    }
+    .card {
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 12px;
+      padding: 1.25rem 1.35rem;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+    }
+    .ville {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 0.5rem;
+    }
+    #statut {
+      font-size: 0.9rem;
+      color: #7dd3fc;
+      min-height: 1.35em;
+    }
+    #erreur {
+      margin-top: 0.75rem;
+      padding: 0.65rem 0.75rem;
+      border-radius: 8px;
+      background: rgba(127, 29, 29, 0.45);
+      border: 1px solid rgba(248, 113, 113, 0.4);
+      color: #fecaca;
+      font-size: 0.875rem;
+    }
+    #erreur[hidden] {
+      display: none !important;
+    }
+    ul#liste-previsions {
+      list-style: none;
+      margin: 1rem 0 0;
+      padding: 0;
+    }
+    ul#liste-previsions li {
+      padding: 0.55rem 0;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+      font-size: 0.9rem;
+      color: #cbd5e1;
+    }
+    ul#liste-previsions li:last-child {
+      border-bottom: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Prévisions</h1>
+    <p class="subtitle">Données <a href="https://open-meteo.com/" style="color:#7dd3fc;">Open-Meteo</a> — corrigé type.</p>
+    <div class="card">
+      <div class="ville" id="ville">—</div>
+      <p id="statut"></p>
+      <p id="erreur" hidden></p>
+      <ul id="liste-previsions"></ul>
+    </div>
+  </div>
+
+<script>
+const villeEl = document.querySelector('#ville');
+const statutEl = document.querySelector('#statut');
+const erreurEl = document.querySelector('#erreur');
+const listeEl = document.querySelector('#liste-previsions');
+
+const URL_METEO =
+  'https://api.open-meteo.com/v1/forecast?latitude=41.9189&longitude=8.7381&daily=temperature_2m_max,temperature_2m_min&timezone=Europe%2FParis';
+
+async function chargerMeteo() {
+  erreurEl.hidden = true;
+  erreurEl.textContent = '';
+  statutEl.textContent = 'Chargement…';
+  listeEl.innerHTML = '';
+
+  try {
+    const response = await fetch(URL_METEO);
+    if (!response.ok) {
+      throw new Error('Réponse HTTP ' + response.status);
+    }
+    const data = await response.json();
+
+    data.daily.time.forEach((dateStr, i) => {
+      const max = data.daily.temperature_2m_max[i];
+      const min = data.daily.temperature_2m_min[i];
+      const li = document.createElement('li');
+      const maxStr = max != null ? String(Math.round(max)) : '–';
+      const minStr = min != null ? String(Math.round(min)) : '–';
+      li.textContent = dateStr + ' — max ' + maxStr + ' °C, min ' + minStr + ' °C';
+      listeEl.appendChild(li);
+    });
+
+    statutEl.textContent = '';
+    villeEl.textContent = 'Ajaccio';
+  } catch (e) {
+    statutEl.textContent = '';
+    erreurEl.hidden = false;
+    erreurEl.textContent = 'Impossible de charger la météo : ' + e.message;
+  }
+}
+
+chargerMeteo();
+</script>
+</body>
+</html>
