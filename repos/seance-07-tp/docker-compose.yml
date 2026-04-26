@@ -1,4 +1,4 @@
-# Environnement PHP + Apache pour le TP Séance 6.
+# Environnement PHP + Apache pour le TP Séance 7.
 # Démarrage : docker compose up -d
 # Site : http://localhost:8080 (fichiers dans ./src)
 

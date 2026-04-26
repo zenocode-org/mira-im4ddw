@@ -4,7 +4,6 @@ import {
   MiraTitleSlide,
   MiraContentSlide,
   CodeSlide,
-  TwinCodeSlide,
 } from "../components";
 import { MiraDeckTemplate } from "../components/MiraDeckTemplate";
 import { miraTheme } from "../components/theme";
@@ -23,11 +22,23 @@ const noTransition = {
   leave: { opacity: 1, transform: "translateX(0)" },
 };
 
-// --- Extraits de code (courts, orientés cours) ---
-const phpClassBasics = `<?php
+// --- Exemple User : une slide par notion (ellipses pour tenir sur l’écran) ---
+const phpUserProprietes = `final class User
+{
+    /** « Promoted properties » = propriétés + paramètres du constructeur */
+    public function __construct(
+        private int $id,
+        private string $firstName,
+        private string $lastName,
+        private string $email,
+    ) {
+        // ... voir diapo « Constructeur »
+    }
 
-declare(strict_types=1);
+    // ... voir diapo « Méthodes »
+}`;
 
+const phpUserConstructeur = `
 final class User
 {
     public function __construct(
@@ -35,172 +46,106 @@ final class User
         private string $firstName,
         private string $lastName,
         private string $email,
-    ) {}
+    ) {
+        if ($this->firstName === '' || $this->lastName === '') {
+            throw new InvalidArgumentException('...');
+        }
+        if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+            throw new InvalidArgumentException('...');
+        }
+    }
+    // ...
+}`;
+
+const phpUserMethodes = `final class User
+{
+    // ... constructeur, propriétés
 
     public function id(): int { return $this->id; }
+    public function email(): string { return $this->email; }
 
-    public function fullName(): string
-    {
-        return $this->firstName . ' ' . $this->lastName;
-    }
+    public function fullName(): string { return $this->firstName . ' ' . $this->lastName; }
 
     public function changeEmail(string $email): void
     {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new InvalidArgumentException('Email invalide');
+            throw new InvalidArgumentException('...');
         }
         $this->email = $email;
     }
 }`;
 
-const phpInheritance = `<?php
-
-declare(strict_types=1);
-
-abstract class DomainEntity
+// --- Héritage (2 extraits) : boutique en ligne, article de catalogue → livre ---
+const phpInheritanceBase = `/** Tout article du catalogue partage un id, un libellé, un prix */
+abstract class CatalogItem
 {
-    public function __construct(protected int $id) {}
-    public function id(): int { return $this->id; }
-}
+    public function __construct(
+        protected int $id,
+        protected string $title,
+        protected int $priceCents,
+    ) {}
 
-final class Product extends DomainEntity
-{
-    public function __construct(int $id, private string $name, private int $priceCents)
+    public function id(): int
     {
-        parent::__construct($id);
+        return $this->id;
     }
 
     public function priceEuro(): float
     {
         return $this->priceCents / 100;
     }
+
+    /** Titre affiché panier / fiche (spécifique : livre, abonnement, etc.) */
+    abstract public function displayName(): string;
+
+    // ... ex. description courte, TVA, promotion
 }`;
 
-const phpInterface = `<?php
+const phpInheritanceProduct = `/** Exemple concret : livre papier (ISBN) */
+final class Book extends CatalogItem
+{
+    public function __construct(
+        int $id,
+        string $title,
+        int $priceCents,
+        private string $isbn,
+    ) {
+        parent::__construct($id, $title, $priceCents);
+    }
 
-declare(strict_types=1);
+    public function displayName(): string
+    {
+        return $this->title . ' (ISBN ' . $this->isbn . ')';
+    }
 
-interface WeatherProviderInterface
+    // ... auteurs, stock, poids
+}`;
+
+// --- Interface + DTO météo + 2 implémentations (fournisseurs / JSON distincts) ---
+const phpInterfaceContract = `interface WeatherProviderInterface
 {
     public function getCurrentForCity(string $city): WeatherReport;
-}
+    // ... autres besoins météo
+}`;
 
-final class WeatherReport
+const phpWeatherReportDto = `final class WeatherReport
 {
     public function __construct(
         public readonly string $city,
         public readonly float $temperatureC,
         public readonly int $humidityPct,
     ) {}
+    // ... helpers éventuels
 }`;
 
-const phpPdoFetchAssoc = `<?php
-
-declare(strict_types=1);
-
-$pdo = new PDO(
-    'mysql:host=db;dbname=app;charset=utf8mb4',
-    'root',
-    'root',
-    [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-);
-
-$stmt = $pdo->prepare('SELECT id, name, price_cents FROM products WHERE id = :id');
-$stmt->execute(['id' => 42]);
-
-$row = $stmt->fetch(PDO::FETCH_ASSOC);
-// $row est un tableau associatif : ['id' => '42', 'name' => '...', 'price_cents' => '...']`;
-
-const phpHydration = `<?php
-
-declare(strict_types=1);
-
-final class Product
-{
-    public function __construct(
-        private int $id,
-        private string $name,
-        private int $priceCents,
-    ) {}
-
-    public function id(): int { return $this->id; }
-    public function name(): string { return $this->name; }
-    public function priceEuro(): float { return $this->priceCents / 100; }
-
-    public static function fromRow(array $row): self
-    {
-        return new self(
-            (int) $row['id'],
-            (string) $row['name'],
-            (int) $row['price_cents'],
-        );
-    }
-}`;
-
-const phpRepository = `<?php
-
-declare(strict_types=1);
-
-final class ProductRepository
-{
-    public function __construct(private PDO $pdo) {}
-
-    public function findById(int $id): ?Product
-    {
-        $stmt = $this->pdo->prepare(
-            'SELECT id, name, price_cents FROM products WHERE id = :id'
-        );
-        $stmt->execute(['id' => $id]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($row === false) {
-            return null;
-        }
-
-        return Product::fromRow($row);
-    }
-}`;
-
-const phpControllerFlow = `<?php
-
-declare(strict_types=1);
-
-// Exemple très simplifié (sans framework)
-
-$id = (int) ($_GET['id'] ?? 0);
-if ($id <= 0) {
-    http_response_code(400);
-    echo json_encode(['error' => 'id invalide']);
-    exit;
-}
-
-$repo = new ProductRepository($pdo);
-$product = $repo->findById($id);
-
-if ($product === null) {
-    http_response_code(404);
-    echo json_encode(['error' => 'Produit introuvable']);
-    exit;
-}
-
-echo json_encode([
-    'id' => $product->id(),
-    'name' => $product->name(),
-    'priceEuro' => $product->priceEuro(),
-]);`;
-
-const phpWeatherApiClient = `<?php
-
-declare(strict_types=1);
-
+const phpWeatherOpenMeteoImpl = `/** Données via Open-Meteo (champs current.temperature_2m, etc.) */
 final class OpenMeteoProvider implements WeatherProviderInterface
 {
-    public function __construct(private string $baseUrl = 'https://api.open-meteo.com') {}
+    // ... __construct (baseUrl, etc.)
 
     public function getCurrentForCity(string $city): WeatherReport
     {
-        // Ici, on imagine qu'on a déjà des coordonnées (simplification cours)
-        $url = $this->baseUrl . '/v1/forecast?latitude=48.85&longitude=2.35&current=temperature_2m,relative_humidity_2m';
+        $url = $this->baseUrl . '/v1/forecast?...'; // lat/lon, etc.
         $json = file_get_contents($url);
         $data = json_decode($json, true);
 
@@ -213,11 +158,132 @@ final class OpenMeteoProvider implements WeatherProviderInterface
     }
 }`;
 
-const phpFakeWeatherProvider = `<?php
+const phpWeatherOtherApiImpl = `/** Autre fournisseur : autre URL, autre forme de JSON (ex. main.temp) */
+final class OpenWeatherMapStyleProvider implements WeatherProviderInterface
+{
+    // ... __construct (clé API, baseUrl, etc.)
 
-declare(strict_types=1);
+    public function getCurrentForCity(string $city): WeatherReport
+    {
+        $url = $this->baseUrl . "/data/2.5/weather?q={$city}&appid={$this->apiKey}&...";
+        $json = file_get_contents($url);
+        $data = json_decode($json, true);
 
-final class FakeWeatherProvider implements WeatherProviderInterface
+        $main = $data['main'] ?? [];
+        return new WeatherReport(
+            city: $city,
+            temperatureC: (float) ($main['temp'] ?? 0),
+            humidityPct: (int) ($main['humidity'] ?? 0),
+        );
+    }
+}`;
+
+const phpPdoConnexion = `$pdo = new PDO(
+    'mysql:host=db;dbname=app;charset=utf8mb4',
+    '...',
+    '...',
+    [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+);
+
+// ... requête sur la diapo suivante`;
+
+const phpPdoRequete = `// $pdo = ...
+
+$stmt = $pdo->prepare(
+    'SELECT id, name, price_cents FROM products WHERE id = :id'
+);
+$stmt->execute(['id' => 42]);
+
+/** @var array<string, mixed>|false $row */
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+// ex. ['id' => '42', 'name' => '...', ...]`;
+
+const phpHydrationChamps = `final class Product
+{
+    public function __construct(
+        private int $id,
+        private string $name,
+        private int $priceCents,
+    ) {}
+
+    public function id(): int { return $this->id; }
+    public function name(): string { return $this->name; }
+    public function priceEuro(): float { return $this->priceCents / 100; }
+
+    // ... voir diapo « fromRow() »
+}`;
+
+const phpHydrationFromRow = `final class Product
+{
+    // ... propriétés, constructeur, accesseurs
+
+    public static function fromRow(array $row): self
+    {
+        return new self(
+            (int) $row['id'],
+            (string) $row['name'],
+            (int) $row['price_cents'],
+        );
+    }
+}`;
+
+const phpRepositoryShell = `final class ProductRepository
+{
+    public function __construct(private PDO $pdo) {}
+
+    // ... findById() sur la diapo suivante
+}`;
+
+const phpRepositoryFind = `final class ProductRepository
+{
+    // ... __construct
+
+    public function findById(int $id): ?Product
+    {
+        $stmt = $this->pdo->prepare('...');
+        $stmt->execute(['id' => $id]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($row === false) {
+            return null;
+        }
+
+        return Product::fromRow($row);
+    }
+}`;
+
+const phpControllerEntree = `$id = (int) ($_GET['id'] ?? 0);
+if ($id <= 0) {
+    http_response_code(400);
+    echo json_encode(['error' => 'id invalide']);
+    exit;
+}
+
+// ... appel repository`;
+
+const phpControllerRepo = `// $id est valide
+
+$repo = new ProductRepository($pdo);
+$product = $repo->findById($id);
+
+if ($product === null) {
+    http_response_code(404);
+    echo json_encode(['error' => '...']);
+    exit;
+}
+
+// ... réponse`;
+
+const phpControllerReponse = `// $product : Product (domaine)
+
+echo json_encode([
+    'id' => $product->id(),
+    'name' => $product->name(),
+    'priceEuro' => $product->priceEuro(),
+    // ... champs, format, en-têtes
+]);`;
+
+const phpFakeWeatherProvider = `final class FakeWeatherProvider implements WeatherProviderInterface
 {
     public function getCurrentForCity(string $city): WeatherReport
     {
@@ -304,11 +370,30 @@ function CoursPhpPoo() {
       </MiraContentSlide>
 
       <CodeSlide
-        heading="Classe : propriétés, constructeur, méthodes"
-        code={phpClassBasics}
+        heading="Exemple User — propriétés (constructeur promu)"
+        code={phpUserProprietes}
         language="php"
         showLineNumbers
-        notes="Montrer : propriétés privées, constructeur, méthode métier, validation et exception. Insister sur l'encapsulation."
+        fontSize={16}
+        notes="Une propriété = état de l'objet. Ici, propriétés privées injectées par le constructeur (PHP 8+). Les ... renvoient aux diapos suivantes."
+      />
+
+      <CodeSlide
+        heading="Exemple User — constructeur"
+        code={phpUserConstructeur}
+        language="php"
+        showLineNumbers
+        fontSize={16}
+        notes="Le constructeur est l'endroit classique pour refuser un état incohérent dès l'instanciation. Les '...' dans les messages raccourcissent l'affichage."
+      />
+
+      <CodeSlide
+        heading="Exemple User — méthodes (accesseurs + métier + mutation)"
+        code={phpUserMethodes}
+        language="php"
+        showLineNumbers
+        fontSize={16}
+        notes="Accesseurs, calcul (fullName/initials), règle sur changeEmail. Les ... indiquent du code non affiché pour tenir sur la slide."
       />
 
       <MiraContentSlide heading="Encapsulation : pourquoi private ?">
@@ -324,10 +409,15 @@ function CoursPhpPoo() {
           <ListItem>
             L'objet devient le gardien des <strong>règles métier</strong>.
           </ListItem>
+          <ListItem>
+            Si l'état est invalide (ex. e-mail rejeté au constructeur), on peut{" "}
+            <strong>lever une exception</strong> (<code>InvalidArgumentException</code>
+            ) : le créateur reçoit un signal d'erreur clair au lieu d'un objet tronqué.
+          </ListItem>
         </UnorderedList>
         <Notes>
           Exemple oral : “email valide” / “prix non négatif” : les règles restent
-          dans l'objet.
+          dans l'objet. Exception = refus explicite, à attraper plus haut si besoin.
         </Notes>
       </MiraContentSlide>
 
@@ -374,13 +464,64 @@ function CoursPhpPoo() {
         </Notes>
       </MiraContentSlide>
 
+      <MiraContentSlide heading="Classe abstraite (`abstract`)">
+        <Text fontSize="2rem" marginBottom={16}>
+          Une <strong>classe abstraite</strong> sert de modèle : on n’y crée
+          pas d’objets directement avec <code>new NomDeLaClasseAbstraite</code>.
+        </Text>
+        <UnorderedList fontSize="1.9rem">
+          <ListItem>
+            Seules les <strong>classes filles</strong> concrètes sont
+            instanciables (ex. <code>Book</code>, pas <code>CatalogItem</code> seul
+            {")"}.
+          </ListItem>
+          <ListItem>
+            Les méthodes <code>abstract</code> n’ont pas d’implémentation dans
+            la mère : chaque enfant <strong>doit</strong> fournir le corps
+            (ex. <code>displayName()</code>).
+          </ListItem>
+        </UnorderedList>
+        <Notes>
+          Lier à l’exemple boutique ci-dessous : <code>CatalogItem</code> = ce
+          qui est commun, les types concrets = variantes.
+        </Notes>
+      </MiraContentSlide>
+
       <CodeSlide
-        heading="Exemple d’héritage (simple)"
-        code={phpInheritance}
+        heading="Héritage — boutique : `CatalogItem` (ce qui est commun)"
+        code={phpInheritanceBase}
         language="php"
         showLineNumbers
-        notes="Montrer abstract, protected, parent::__construct. Insister : exemple pédagogique, pas un modèle universel."
+        fontSize={16}
+        notes="Rappel diapo précédente : abstract, pas d’instance directe. displayName() oblige chaque type concret (livre, abonnement…) à préciser l’intitulé."
       />
+
+      <CodeSlide
+        heading="Héritage — `Book` extends `CatalogItem`"
+        code={phpInheritanceProduct}
+        language="php"
+        showLineNumbers
+        fontSize={16}
+        notes="parent::__construct() remplit id/titre/prix. Spécifique au livre : ISBN. Même filet qu’en base : d’autres classes pourraient extends CatalogItem (ex. Ebook, Abonnement)."
+      />
+
+      <MiraContentSlide heading="Objets vs tableaux (PDO, JSON, formulaires)">
+        <UnorderedList fontSize="2rem">
+          <ListItem>
+            Beaucoup d'entrées arrivent en <strong>tableaux</strong> (PDO fetch,
+            json_decode, $_POST).
+          </ListItem>
+          <ListItem>
+            Dans l'application, on préfère manipuler des <strong>objets</strong>{" "}
+            stables : mêmes méthodes, mêmes invariants, mêmes noms.
+          </ListItem>
+        </UnorderedList>
+        <Notes>
+          Point clé avant les exemples météo : « transformer des données brutes
+          en objets métier » — chaque source a son format (JSON, ligne SQL) ;
+          l’idée s’applique partout.
+        </Notes>
+      </MiraContentSlide>
 
       <MiraContentSlide heading="Interfaces : un contrat, plusieurs implémentations">
         <Text fontSize="2rem" marginBottom={16}>
@@ -400,26 +541,77 @@ function CoursPhpPoo() {
       </MiraContentSlide>
 
       <CodeSlide
-        heading="Interface + objet de domaine (WeatherReport)"
-        code={phpInterface}
+        heading="Interface — contrat du provider"
+        code={phpInterfaceContract}
         language="php"
         showLineNumbers
-        notes="Présenter un objet métier simple (report) et le contrat du provider."
+        fontSize={16}
+        notes="L'interface = ce qu'on peut demander, sans imposer l'API externe, la BDD, etc."
       />
 
-      <MiraContentSlide heading="Objets vs tableaux (PDO, JSON, formulaires)">
-        <UnorderedList fontSize="2rem">
+      <CodeSlide
+        heading="Objet de domaine — `WeatherReport` (DTO / valeur)"
+        code={phpWeatherReportDto}
+        language="php"
+        showLineNumbers
+        fontSize={16}
+        notes="readonly public = simple conteneur de données. En projet, on peut aussi tout passer en private + getters."
+      />
+
+      <MiraContentSlide heading="Même interface : input? output?">
+        <Text fontSize="2rem" marginBottom={16}>
+          <code>WeatherProviderInterface</code> fixe le <strong>contrat</strong> :{" "}
+          même paramètre d'entrée (ex. <code>getCurrentForCity(string $city)</code>
+          ) et <strong>le même type de retour</strong> : un <code>WeatherReport</code>.
+        </Text>
+        <UnorderedList fontSize="1.9rem">
           <ListItem>
-            Beaucoup d'entrées arrivent en <strong>tableaux</strong> (PDO fetch,
-            json_decode, $_POST).
+            L'<strong>implémentation</strong> est libre d'aller lire l'API 1, l'API
+            2, un cache, un fichier, etc. : chaque chemin a son format brut.
           </ListItem>
           <ListItem>
-            Dans l'application, on préfère manipuler des <strong>objets</strong>{" "}
-            stables : mêmes méthodes, mêmes invariants, mêmes noms.
+            À chaque fois, on <strong>adapte</strong> (parse JSON, noms de champs
+            différents) pour produire <strong>le même</strong> objet métier.
           </ListItem>
         </UnorderedList>
-        <Notes>Point clé : “transformer des données brutes en objets métier”.</Notes>
+        <Text fontSize="1.15rem" marginTop={14} color="#64748b">
+          Les diapos de code qui suivent : deux API HTTP, puis une version{" "}
+          <strong>fake</strong> (même interface, sans réseau) — une seule forme
+          côté application.
+        </Text>
+        <Notes>
+          Insister : entrée/sortie stables, « comment » caché dans chaque classe
+          concrète. Faire le lien explicite API1 = structure JSON A, API2 = B, même
+          WeatherReport.
+        </Notes>
       </MiraContentSlide>
+
+      <CodeSlide
+        heading="Impl. 1 — Open-Meteo"
+        code={phpWeatherOpenMeteoImpl}
+        language="php"
+        showLineNumbers
+        fontSize={15}
+        notes="Premier choix d’intégration : HTTP + parse du JSON Open-Meteo. Les clés (current, temperature_2m) sont spécifiques à ce fournisseur."
+      />
+
+      <CodeSlide
+        heading="Impl. 2 — OpenWeather"
+        code={phpWeatherOtherApiImpl}
+        language="php"
+        showLineNumbers
+        fontSize={15}
+        notes="Même interface : autre base URL, autre requête, autre forme de réponse. On mappe main.temp / main.humidity vers le même WeatherReport. Nom OpenWeatherMapStyleProvider = explicite sans être le focus du code."
+      />
+
+      <CodeSlide
+        heading="Impl. 3 — fake : tests / dev sans Internet"
+        code={phpFakeWeatherProvider}
+        language="php"
+        showLineNumbers
+        fontSize={16}
+        notes="Même contrat que les deux API : utile en local et pour les tests. Pas d'HTTP : données fixes ou paramétrables."
+      />
 
       <MiraContentSlide heading="Début de la partie projet : le problème réel">
         <Text fontSize="2rem" marginBottom={16}>
@@ -460,74 +652,153 @@ function CoursPhpPoo() {
         </Notes>
       </MiraContentSlide>
 
-      <MiraContentSlide heading="Schéma — requête → données → domaine → réponse" fullWidth>
+      <MiraContentSlide heading="Arborescence type — requête → données → domaine → réponse" fullWidth>
         <Box
-          display="flex"
-          flexDirection="row"
-          alignItems="stretch"
-          justifyContent="space-between"
-          gap={16}
-          width="100%"
           marginTop={20}
+          padding="20px 24px"
+          style={{
+            borderRadius: 10,
+            border: "1px solid #e2e8f0",
+            background: "#f8fafc",
+            textAlign: "left",
+            overflow: "auto",
+          }}
         >
-          {[
-            { title: "HTTP Request", sub: "route, params, auth" },
-            { title: "Controller", sub: "orchestration" },
-            { title: "Repository/Provider", sub: "DB / API / cache" },
-            { title: "Domaine", sub: "objets métier" },
-            { title: "Response", sub: "HTML / JSON" },
-          ].map((b) => (
-            <Box
-              key={b.title}
-              flex={1}
-              padding="16px"
-              style={{
-                borderRadius: 10,
-                border: "1px solid #e2e8f0",
-                background: "#ffffff",
-              }}
-            >
-              <Text fontSize="1.4rem" fontWeight={700} marginBottom={8}>
-                {b.title}
-              </Text>
-              <Text fontSize="1.1rem" color="#64748b">
-                {b.sub}
-              </Text>
-            </Box>
-          ))}
+          <pre
+            style={{
+              fontFamily:
+                "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+              fontSize: "1.1rem",
+              lineHeight: 1.55,
+              margin: 0,
+              color: "#0f172a",
+              whiteSpace: "pre",
+            }}
+          >{`projet/
+├── public/
+│   └── index.php              ← point d'entrée HTTP
+├── src/
+│   ├── Http/Controllers/      ← routes, paramètres, orchestration
+│   ├── Infrastructure/
+│   │   └── Repositories/      ← DB / API / cache → hydratation
+│   ├── Domain/                ← entités, règles métier
+│   └── View/                  ← HTML (ou JSON émis par le contrôleur)
+└── var/                       ← cache, logs, fichiers générés (optionnel)
+`}</pre>
         </Box>
         <Text fontSize="1.1rem" marginTop={18} color="#4a5568">
           Idée centrale : le reste du code veut des <strong>objets métier</strong>,
           quelle que soit la source des données.
         </Text>
         <Notes>
-          Lire de gauche à droite. Insister : repository/provider = “zone de
-          traduction” vers le domaine.
+          Parcourir l’arbre du haut vers le domaine, puis la réponse. Insister
+          : <code>Repositories</code> = “zone de traduction” des lignes
+          brutes → objets du domaine.
         </Notes>
       </MiraContentSlide>
 
       <CodeSlide
-        heading="PDO : récupérer une ligne (tableau associatif)"
-        code={phpPdoFetchAssoc}
+        heading="PDO — connexion (extrait)"
+        code={phpPdoConnexion}
         language="php"
         showLineNumbers
-        notes="Insister : la DB renvoie des chaînes ; on fera la conversion au moment de créer l'objet."
+        fontSize={16}
+        notes="Raccourci volontaire : identifiants en '...'. On active ERRMODE pour remonter les erreurs SQL clairement."
       />
 
       <CodeSlide
-        heading="Hydrater un objet métier à partir d’un tableau"
-        code={phpHydration}
+        heading="PDO — requête → tableau associatif"
+        code={phpPdoRequete}
         language="php"
         showLineNumbers
-        notes="Montrer la factory fromRow : conversion de types et mapping champ→propriété."
+        fontSize={16}
+        notes="FETCH_ASSOC : prêt à être transformé en objet métier (types souvent en string côté MySQL)."
+      />
+
+      <MiraContentSlide heading="Hydratation : de la ligne SQL à l’objet">
+        <Text fontSize="2rem" marginBottom={16}>
+          <strong>Hydratation</strong> = remplir un <strong>objet du domaine</strong> à partir
+          de <strong>données brutes</strong> (souvent un tableau : ligne PDO, morceau de JSON,{" "}
+          <code>$_POST</code>…).
+        </Text>
+        <UnorderedList fontSize="2rem">
+          <ListItem>
+            On choisit quelles clés du tableau vont dans quelles propriétés, et on{" "}
+            <strong>convertit les types</strong> (ex. <code>(int)</code> car MySQL renvoie parfois
+            des chaînes).
+          </ListItem>
+          <ListItem>
+            Ça se fait en général <strong>à la lisière</strong> (repository, contrôleur) : le reste
+            du code manipule un <code>Product</code>, pas un <code>array</code> anonyme.
+          </ListItem>
+        </UnorderedList>
+        <Notes>
+          Insister : “hydrater” = même idée qu’ailleurs (remplir un modèle), ici le terme
+          qu’on croise en persistance / DDD léger. Enchaîner : d’abord la classe
+          Product, la diapo sur <code>static</code> / <code>fromRow</code>, puis le
+          code.
+        </Notes>
+      </MiraContentSlide>
+
+      <MiraContentSlide heading="Méthode statique : pourquoi `fromRow` ?">
+        <Text fontSize="2rem" marginBottom={16}>
+          Une <strong>méthode statique</strong> s’appelle sur le nom de la
+          classe (<code>Product::fromRow($row)</code>), pas sur une instance déjà
+          créée — utile pour <strong>fabriquer</strong> l’objet à partir d’un
+          tableau.
+        </Text>
+        <UnorderedList fontSize="1.9rem">
+          <ListItem>
+            On <strong>centralise</strong> ici le mapping (clés, casts) : un
+            seul endroit quand le schéma SQL ou les alias changent.
+          </ListItem>
+          <ListItem>
+            C’est un patron courant (factory) : le reste du code appelle{" "}
+            <code>fromRow</code> / le constructeur, sans répéter le détail de la
+            ligne PDO.
+          </ListItem>
+        </UnorderedList>
+        <Notes>
+          Option avancée : constructeur <code>private</code> + seulement
+          <code>fromRow</code> public — ici on garde un constructeur classique
+          pour aller simple.
+        </Notes>
+      </MiraContentSlide>
+
+      <CodeSlide
+        heading="Hydratation — l’objet `Product` (champs + accesseurs)"
+        code={phpHydrationChamps}
+        language="php"
+        showLineNumbers
+        fontSize={16}
+        notes="On sépare l'objet (domaine) de la source (ligne SQL). Les ... = suite du mapping."
       />
 
       <CodeSlide
-        heading="Repository : isoler l’accès à la base de données"
-        code={phpRepository}
+        heading="Hydratation — `fromRow(array)` (factory statique)"
+        code={phpHydrationFromRow}
         language="php"
         showLineNumbers
-        notes="Point clé : ailleurs dans le code, on demande un Product, pas un array."
+        fontSize={16}
+        notes="Point central : cast explicite (int/string) = conversion dès la lisière (tableau -> objet). Voir diapo précédente pour le rôle de static / factory."
+      />
+
+      <CodeSlide
+        heading="Repository — rôle (dépend de PDO)"
+        code={phpRepositoryShell}
+        language="php"
+        showLineNumbers
+        fontSize={16}
+        notes="Le repository encapsule l'accès : il reçoit souvent le client BDD (PDO) au constructeur — injection de dépendance : on passe explicitement ce dont la classe a besoin, plutôt qu'un global caché. Le reste du code ne connaît pas le SQL ici-bas (démo sur la diapo suivante)."
+      />
+
+      <CodeSlide
+        heading="Repository — `findById` → `Product` ou `null`"
+        code={phpRepositoryFind}
+        language="php"
+        showLineNumbers
+        fontSize={16}
+        notes="null = 'pas trouvé' : à gérer au niveau HTTP (404) dans le contrôleur."
       />
 
       <MiraContentSlide heading="Pourquoi isoler SQL / HTTP / domaine ?">
@@ -568,75 +839,68 @@ function CoursPhpPoo() {
         </Notes>
       </MiraContentSlide>
 
-      <MiraContentSlide heading="Même logique avec une API externe (météo)">
+      <MiraContentSlide heading="Même principe après SQL : `fromRow` = adapter comme un provider">
         <Text fontSize="2rem" marginBottom={16}>
-          Une API renvoie du <strong>JSON</strong> : ce n'est pas “le domaine”.
-          On transforme ce JSON en <strong>WeatherReport</strong>.
+          Une ligne PDO ou un JSON d'API ne sont <strong>pas</strong> le domaine
+          tel quel : on <strong>adapte</strong> en un endroit —{" "}
+          <code>fromRow</code> / repository pour la base, implémentations{" "}
+          d'<strong>interface</strong> pour l'HTTP (vu plus haut : météo).
         </Text>
-        <UnorderedList fontSize="2rem">
+        <UnorderedList fontSize="1.9rem">
           <ListItem>
-            L'application manipule toujours le même objet métier, quelle que
-            soit la source.
+            Les données peuvent venir de : base, API, cache, fichier… Le reste du
+            code travaille sur des <strong>objets</strong> stables.
           </ListItem>
           <ListItem>
-            On peut stubber l'API avec une implémentation fake.
+            Conversions regroupées : <strong>repository</strong> /{" "}
+            <strong>provider</strong> (vocabulaire « anti-corruption layer » en
+            bonus seulement si utile).
           </ListItem>
         </UnorderedList>
         <Notes>
-          Faire le parallèle DB↔API : deux sources, même “sortie” : objet métier.
+          Enchaîner vers l'orchestration : le contrôleur s'appuie sur ces couches,
+          pas sur le format brut. ACL = vocabulaire bonus seulement si utile.
         </Notes>
       </MiraContentSlide>
 
       <CodeSlide
-        heading="Provider réel : appel API → WeatherReport"
-        code={phpWeatherApiClient}
+        heading="Orchestration — lecture / validation de l’entrée"
+        code={phpControllerEntree}
         language="php"
         showLineNumbers
-        notes="Simplification volontaire : focus sur la transformation JSON -> objet (pas sur la géolocalisation)."
+        fontSize={16}
+        notes="Étape 1 : on ne fait pas confiance à l'URL : id > 0. Erreur HTTP 400 si invalide."
       />
 
       <CodeSlide
-        heading="Provider fake : pour tester / développer sans Internet"
-        code={phpFakeWeatherProvider}
+        heading="Orchestration — repository + ressource introuvable"
+        code={phpControllerRepo}
         language="php"
         showLineNumbers
-        notes="Montrer l'intérêt des interfaces : même contrat, autre implémentation."
+        fontSize={16}
+        notes="Étape 2 : le domaine arrive via le repository. null => 404 (ressource absente)."
       />
 
-      <MiraContentSlide heading="Même domaine, sources différentes">
-        <UnorderedList fontSize="2rem">
-          <ListItem>
-            Les données peuvent venir de : base de données, API externe, cache,
-            fichier…
-          </ListItem>
-          <ListItem>
-            Le reste du code veut une forme stable : <strong>des objets</strong>{" "}
-            avec des méthodes et des règles.
-          </ListItem>
-          <ListItem>
-            On centralise les conversions au bon endroit : repository / provider
-            (anti-corruption layer).
-          </ListItem>
-        </UnorderedList>
-        <Notes>
-          Donner le vocabulaire “anti-corruption layer” en bonus seulement si
-          utile.
-        </Notes>
-      </MiraContentSlide>
-
       <CodeSlide
-        heading="Orchestration : de la requête à la réponse"
-        code={phpControllerFlow}
+        heading="Orchestration — réponse (objet métier → JSON)"
+        code={phpControllerReponse}
         language="php"
         showLineNumbers
-        notes="Montrer : validation d'entrée, appel repo, gestion 404, réponse JSON."
+        fontSize={16}
+        notes="Étape 3 : on sérialise ce qu'on expose (ici, champs publics). ... = filtrer/formatter au besoin."
       />
 
       <MiraContentSlide heading="Bonnes pratiques (à ce niveau du cours)">
-        <UnorderedList fontSize="2rem">
+        <UnorderedList fontSize="1.9rem">
           <ListItem>
             Ne pas mettre du SQL dans un objet métier (<code>Product</code> ne
             doit pas “faire des requêtes”).
+          </ListItem>
+          <ListItem>
+            Faire entrer les <strong>dépendances</strong> (ex.{" "}
+            <code>new ProductRepository($pdo)</code>) par le{" "}
+            <strong>constructeur</strong> : plus lisible qu’un <code>PDO</code>{" "}
+            global caché, et plus facile à tester.
           </ListItem>
           <ListItem>
             Ne pas faire une classe “God object” (tout dans un seul fichier).
@@ -647,22 +911,29 @@ function CoursPhpPoo() {
           </ListItem>
         </UnorderedList>
         <Notes>
-          Répéter : “responsabilités” et “transformer la donnée brute en domaine”.
+          Répéter : “responsabilités”, “transformer la donnée brute en domaine”,
+          et “dépendances explicites” (même principe que pour le fake provider).
         </Notes>
       </MiraContentSlide>
 
       <MiraContentSlide heading="Récap — ce que tu dois retenir">
-        <UnorderedList fontSize="2rem">
+        <UnorderedList fontSize="1.9rem">
           <ListItem>
-            POO : classes/objets, encapsulation, méthodes = règles métier.
+            POO : classes/objets, encapsulation, méthodes = règles métier
+            (invalidité → <strong>exception</strong> possible).
           </ListItem>
           <ListItem>
-            Projet web : la donnée vient souvent en tableaux/JSON → on{" "}
-            <strong>hydrate</strong> des objets métier.
+            Héritage (dont <code>abstract</code>) + <strong>interfaces</strong>{" "}
+            pour structurer et brancher des implémentations.
           </ListItem>
           <ListItem>
-            On isole les sources (DB/API) dans des classes dédiées (repositories
-            / providers).
+            Projet web : tableaux/JSON/PDO → on <strong>hydrate</strong> en
+            objets (souvent <code>static</code> / <code>fromRow</code> en lisière).
+          </ListItem>
+          <ListItem>
+            On isole les sources (DB/API) dans des classes dédiées
+            (repositories / providers) avec dépendances <strong>explicites</strong>{" "}
+            au besoin.
           </ListItem>
         </UnorderedList>
         <Notes>Transition possible : TP ou mini-projet API + DB.</Notes>
