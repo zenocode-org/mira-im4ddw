@@ -4,6 +4,7 @@ import PresentationModule from './seance-01/presentation-module.jsx';
 import CoursHtmlCss from './seance-01/cours-html-css.jsx';
 import CoursJavascriptTheorique from './seance-03/cours-javascript-theorique.jsx';
 import CoursPhpTheorique from './seance-06/cours-php-theorique.jsx';
+import CoursPhpPoo from './seance-07/cours-php-poo.jsx';
 
 const SESSIONS = [
   {
@@ -36,6 +37,18 @@ const SESSIONS = [
         key: 'seance-06-php-theorique',
         title: 'Cours PHP théorique',
         component: CoursPhpTheorique,
+      },
+    ],
+  },
+  {
+    id: 'seance-07',
+    title: 'Séance 7',
+    date: 'à compléter',
+    decks: [
+      {
+        key: 'seance-07-php-poo',
+        title: 'POO PHP (domaine + données)',
+        component: CoursPhpPoo,
       },
     ],
   },
